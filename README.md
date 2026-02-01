@@ -1,4 +1,4 @@
-# AssignHub Landing Page
+# AssignHub-mern
 
 A premium, modern website for an assignment marketplace platform connecting students with expert helpers. Built with GSAP animations and ready for MERN stack integration.
 
