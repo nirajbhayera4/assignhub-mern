@@ -1,43 +1,1100 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using create-react-app"
-    />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AssignHub - Connect Students with Expert Helpers</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-    <title>React App</title>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
+        :root {
+            --primary: #0f0f0f;
+            --accent: #00ff88;
+            --accent-2: #ff3366;
+            --bg: #fafafa;
+            --text: #1a1a1a;
+            --text-light: #666;
+            --card-bg: #ffffff;
+        }
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+        body {
+            font-family: 'Syne', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
-  </body>
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Cursor */
+        .cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--accent);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+            transition: transform 0.2s ease;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 2rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(250, 250, 250, 0.8);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: -0.05em;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            font-size: 0.95rem;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .cta-btn {
+            background: var(--primary);
+            color: white;
+            padding: 0.8rem 1.8rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: 2px solid var(--primary);
+        }
+
+        .cta-btn:hover {
+            background: transparent;
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 5%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 1400px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            margin-top: 4rem;
+        }
+
+        .hero-text h1 {
+            font-size: clamp(3rem, 7vw, 6rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.03em;
+        }
+
+        .hero-text h1 .gradient-text {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-text p {
+            font-size: 1.3rem;
+            color: var(--text-light);
+            margin-bottom: 2.5rem;
+            max-width: 550px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            padding: 1.2rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border: 2px solid var(--primary);
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .btn-primary:hover {
+            background: transparent;
+            color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary);
+            padding: 1.2rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border: 2px solid var(--primary);
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .hero-visual {
+            position: relative;
+        }
+
+        .floating-cards {
+            position: relative;
+            width: 100%;
+            height: 600px;
+        }
+
+        .card {
+            position: absolute;
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .card-1 {
+            top: 10%;
+            left: 10%;
+            width: 280px;
+            transform: rotate(-5deg);
+        }
+
+        .card-2 {
+            top: 40%;
+            right: 5%;
+            width: 300px;
+            transform: rotate(8deg);
+        }
+
+        .card-3 {
+            bottom: 15%;
+            left: 20%;
+            width: 260px;
+            transform: rotate(-3deg);
+        }
+
+        .card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.8rem;
+            color: var(--primary);
+        }
+
+        .card p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .card .tag {
+            display: inline-block;
+            background: var(--accent);
+            color: var(--primary);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        /* Background Elements */
+        .bg-element {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.6;
+            filter: blur(80px);
+        }
+
+        .bg-1 {
+            width: 500px;
+            height: 500px;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.3), rgba(255, 51, 102, 0.3));
+            top: -10%;
+            right: -10%;
+        }
+
+        .bg-2 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, rgba(255, 51, 102, 0.2), rgba(0, 255, 136, 0.2));
+            bottom: -5%;
+            left: -5%;
+        }
+
+        /* Stats Section */
+        .stats {
+            padding: 6rem 5%;
+            background: var(--primary);
+            color: white;
+        }
+
+        .stats-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 4rem;
+            text-align: center;
+        }
+
+        .stat-item h2 {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-item p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            padding: 8rem 5%;
+            background: var(--bg);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 5rem;
+        }
+
+        .section-title h2 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .section-title p {
+            font-size: 1.3rem;
+            color: var(--text-light);
+        }
+
+        .steps {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            gap: 3rem;
+        }
+
+        .step {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .step-number {
+            width: 80px;
+            height: 80px;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 800;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .step-number::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .step:hover .step-number::before {
+            left: 100%;
+        }
+
+        .step-content h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .step-content p {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            line-height: 1.8;
+        }
+
+        /* Features */
+        .features {
+            padding: 8rem 5%;
+            background: white;
+        }
+
+        .features-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .feature-card {
+            padding: 3rem;
+            background: var(--bg);
+            border-radius: 30px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-2));
+            transform: scaleX(0);
+            transition: transform 0.4s;
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .feature-card p {
+            color: var(--text-light);
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 8rem 5%;
+            background: linear-gradient(135deg, var(--primary) 0%, #1a1a1a 100%);
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(0, 255, 136, 0.1), transparent);
+            transform: translate(-50%, -50%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+            50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.8; }
+        }
+
+        .cta-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-content h2 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .cta-content p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 3rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-white {
+            background: white;
+            color: var(--primary);
+            padding: 1.2rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border: 2px solid white;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .btn-white:hover {
+            background: transparent;
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        /* Footer */
+        footer {
+            padding: 4rem 5%;
+            background: var(--primary);
+            color: white;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-brand h3 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .footer-brand p {
+            opacity: 0.8;
+            line-height: 1.8;
+        }
+
+        .footer-links h4 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links ul li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links ul li a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .footer-links ul li a:hover {
+            opacity: 1;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            opacity: 0.8;
+        }
+
+        @media (max-width: 968px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero-text p {
+                max-width: 100%;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+            }
+
+            .floating-cards {
+                display: none;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="cursor"></div>
+
+    <nav>
+        <div class="logo">Assign<span>Hub</span></div>
+        <div class="nav-links">
+            <a href="#how">How It Works</a>
+            <a href="#features">Features</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#" class="cta-btn">Get Started</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="bg-element bg-1"></div>
+        <div class="bg-element bg-2"></div>
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>
+                    Connect. <br>
+                    Complete. <br>
+                    <span class="gradient-text">Collaborate.</span>
+                </h1>
+                <p>The smartest way to get your assignments done. Students find help, experts earn money. Welcome to the future of academic collaboration.</p>
+                <div class="hero-buttons">
+                    <a href="#" class="btn-primary">I Need Help</a>
+                    <a href="#" class="btn-secondary">I Want to Earn</a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="floating-cards">
+                    <div class="card card-1">
+                        <h3>Essay on AI Ethics</h3>
+                        <p>10 pages, APA format</p>
+                        <span class="tag">$85.00</span>
+                    </div>
+                    <div class="card card-2">
+                        <h3>Calculus Problem Set</h3>
+                        <p>15 problems with solutions</p>
+                        <span class="tag">$45.00</span>
+                    </div>
+                    <div class="card card-3">
+                        <h3>React.js Project</h3>
+                        <p>Full-stack web application</p>
+                        <span class="tag">$150.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats">
+        <div class="stats-container">
+            <div class="stat-item">
+                <h2 class="stat-number">12K+</h2>
+                <p>Assignments Completed</p>
+            </div>
+            <div class="stat-item">
+                <h2 class="stat-number">5K+</h2>
+                <p>Active Students</p>
+            </div>
+            <div class="stat-item">
+                <h2 class="stat-number">2K+</h2>
+                <p>Expert Helpers</p>
+            </div>
+            <div class="stat-item">
+                <h2 class="stat-number">98%</h2>
+                <p>Satisfaction Rate</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="how-it-works" id="how">
+        <div class="section-title">
+            <h2>How It Works</h2>
+            <p>Simple, transparent, and efficient</p>
+        </div>
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3>Post Your Assignment</h3>
+                    <p>Students upload their assignment details, requirements, deadlines, and budget. Our smart matching algorithm immediately starts connecting you with qualified experts in your subject area.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>Get Matched with Experts</h3>
+                    <p>Browse profiles, reviews, and pricing from verified experts. Chat directly, ask questions, and choose the perfect helper based on expertise, ratings, and availability.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3>Track Progress & Collaborate</h3>
+                    <p>Real-time updates, milestone tracking, and direct communication ensure you're always in the loop. Request revisions, provide feedback, and collaborate seamlessly.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h3>Receive & Review</h3>
+                    <p>Get your completed assignment, review the work, and release payment securely through our escrow system. Rate your experience and build your academic network.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <div class="section-title">
+            <h2>Why Choose AssignHub?</h2>
+            <p>Built for students, powered by experts</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3>Secure Payments</h3>
+                <p>Your money is protected with our escrow system. Payment is only released when you're 100% satisfied with the work delivered.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Fast Matching</h3>
+                <p>Get connected with qualified experts in minutes, not hours. Our AI-powered system ensures the perfect match every time.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">✓</div>
+                <h3>Verified Experts</h3>
+                <p>Every helper goes through rigorous verification. Check credentials, ratings, and past work before making your choice.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💬</div>
+                <h3>Real-Time Chat</h3>
+                <p>Communicate instantly with your expert. Share files, ask questions, and get updates throughout the entire process.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>Quality Guarantee</h3>
+                <p>Not satisfied? Request unlimited revisions. We stand behind the quality of work delivered on our platform.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Progress Tracking</h3>
+                <p>Stay informed with milestone updates, delivery estimates, and real-time progress indicators for all your assignments.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <div class="cta-content">
+            <h2>Ready to Transform Your Academic Journey?</h2>
+            <p>Join thousands of students getting better grades and experts earning meaningful income. Start today, completely free.</p>
+            <div class="cta-buttons">
+                <a href="#" class="btn-white">Get Started Now</a>
+                <a href="#" class="btn-secondary" style="border-color: white; color: white;">Learn More</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>AssignHub</h3>
+                <p>Empowering students and experts to collaborate, learn, and succeed together. Building the future of academic support.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Platform</h4>
+                <ul>
+                    <li><a href="#">For Students</a></li>
+                    <li><a href="#">For Experts</a></li>
+                    <li><a href="#">How It Works</a></li>
+                    <li><a href="#">Pricing</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Cookie Policy</a></li>
+                    <li><a href="#">Guidelines</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 AssignHub. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Register GSAP plugins
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Custom cursor
+        const cursor = document.querySelector('.cursor');
+        document.addEventListener('mousemove', (e) => {
+            gsap.to(cursor, {
+                x: e.clientX,
+                y: e.clientY,
+                duration: 0.3,
+                ease: 'power2.out'
+            });
+        });
+
+        // Interactive elements hover
+        document.querySelectorAll('a, button').forEach(elem => {
+            elem.addEventListener('mouseenter', () => {
+                gsap.to(cursor, { scale: 1.5, duration: 0.2 });
+            });
+            elem.addEventListener('mouseleave', () => {
+                gsap.to(cursor, { scale: 1, duration: 0.2 });
+            });
+        });
+
+        // Navigation animation
+        gsap.from('nav', {
+            y: -100,
+            opacity: 0,
+            duration: 1,
+            ease: 'power3.out'
+        });
+
+        // Hero content animations
+        gsap.from('.hero-text h1', {
+            y: 100,
+            opacity: 0,
+            duration: 1,
+            delay: 0.3,
+            ease: 'power3.out'
+        });
+
+        gsap.from('.hero-text p', {
+            y: 50,
+            opacity: 0,
+            duration: 1,
+            delay: 0.5,
+            ease: 'power3.out'
+        });
+
+        gsap.from('.hero-buttons', {
+            y: 50,
+            opacity: 0,
+            duration: 1,
+            delay: 0.7,
+            ease: 'power3.out'
+        });
+
+        // Floating cards animations
+        gsap.from('.card-1', {
+            x: -200,
+            opacity: 0,
+            rotation: -20,
+            duration: 1.2,
+            delay: 0.5,
+            ease: 'power3.out'
+        });
+
+        gsap.from('.card-2', {
+            x: 200,
+            opacity: 0,
+            rotation: 20,
+            duration: 1.2,
+            delay: 0.7,
+            ease: 'power3.out'
+        });
+
+        gsap.from('.card-3', {
+            y: 200,
+            opacity: 0,
+            rotation: -10,
+            duration: 1.2,
+            delay: 0.9,
+            ease: 'power3.out'
+        });
+
+        // Floating animation for cards
+        gsap.to('.card-1', {
+            y: -20,
+            duration: 2,
+            repeat: -1,
+            yoyo: true,
+            ease: 'power1.inOut'
+        });
+
+        gsap.to('.card-2', {
+            y: -30,
+            duration: 2.5,
+            repeat: -1,
+            yoyo: true,
+            ease: 'power1.inOut'
+        });
+
+        gsap.to('.card-3', {
+            y: -25,
+            duration: 2.2,
+            repeat: -1,
+            yoyo: true,
+            ease: 'power1.inOut'
+        });
+
+        // Background elements animation
+        gsap.to('.bg-1', {
+            x: 50,
+            y: 50,
+            duration: 10,
+            repeat: -1,
+            yoyo: true,
+            ease: 'power1.inOut'
+        });
+
+        gsap.to('.bg-2', {
+            x: -50,
+            y: -50,
+            duration: 8,
+            repeat: -1,
+            yoyo: true,
+            ease: 'power1.inOut'
+        });
+
+        // Stats counter animation
+        ScrollTrigger.create({
+            trigger: '.stats',
+            start: 'top 80%',
+            onEnter: () => {
+                document.querySelectorAll('.stat-number').forEach(stat => {
+                    const target = stat.textContent;
+                    const isPercentage = target.includes('%');
+                    const number = parseInt(target.replace(/[^\d]/g, ''));
+                    
+                    gsap.from(stat, {
+                        textContent: 0,
+                        duration: 2,
+                        ease: 'power1.out',
+                        snap: { textContent: 1 },
+                        onUpdate: function() {
+                            const current = Math.ceil(this.targets()[0].textContent);
+                            if (isPercentage) {
+                                stat.textContent = current + '%';
+                            } else if (number >= 1000) {
+                                stat.textContent = (current / 1000).toFixed(1) + 'K+';
+                            } else {
+                                stat.textContent = current + '+';
+                            }
+                        }
+                    });
+                });
+            }
+        });
+
+        // Steps animation
+        gsap.from('.step', {
+            scrollTrigger: {
+                trigger: '.steps',
+                start: 'top 80%',
+                toggleActions: 'play none none reverse'
+            },
+            x: -100,
+            opacity: 0,
+            duration: 0.8,
+            stagger: 0.2,
+            ease: 'power3.out'
+        });
+
+        // Features cards animation
+        gsap.from('.feature-card', {
+            scrollTrigger: {
+                trigger: '.features-grid',
+                start: 'top 80%',
+                toggleActions: 'play none none reverse'
+            },
+            y: 100,
+            opacity: 0,
+            duration: 0.8,
+            stagger: 0.15,
+            ease: 'power3.out'
+        });
+
+        // CTA section animation
+        gsap.from('.cta-content h2', {
+            scrollTrigger: {
+                trigger: '.cta-section',
+                start: 'top 80%',
+                toggleActions: 'play none none reverse'
+            },
+            scale: 0.8,
+            opacity: 0,
+            duration: 1,
+            ease: 'back.out(1.7)'
+        });
+
+        gsap.from('.cta-content p', {
+            scrollTrigger: {
+                trigger: '.cta-section',
+                start: 'top 80%',
+                toggleActions: 'play none none reverse'
+            },
+            y: 30,
+            opacity: 0,
+            duration: 1,
+            delay: 0.2,
+            ease: 'power3.out'
+        });
+
+        gsap.from('.cta-buttons', {
+            scrollTrigger: {
+                trigger: '.cta-section',
+                start: 'top 80%',
+                toggleActions: 'play none none reverse'
+            },
+            y: 30,
+            opacity: 0,
+            duration: 1,
+            delay: 0.4,
+            ease: 'power3.out'
+        });
+
+        // Parallax effect for sections
+        gsap.utils.toArray('.section-title').forEach(section => {
+            gsap.from(section, {
+                scrollTrigger: {
+                    trigger: section,
+                    start: 'top 80%',
+                    toggleActions: 'play none none reverse'
+                },
+                y: 50,
+                opacity: 0,
+                duration: 1,
+                ease: 'power3.out'
+            });
+        });
+
+        // Smooth scroll for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    gsap.to(window, {
+                        duration: 1,
+                        scrollTo: target,
+                        ease: 'power3.inOut'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
 </html>
