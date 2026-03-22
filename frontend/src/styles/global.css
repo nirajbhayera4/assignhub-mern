@@ -3,10 +3,13 @@
     --primary: #0f0f0f;
     --accent: #00ff88;
     --accent-2: #ff3366;
-    --bg: #fafafa;
+    --bg: #ffffff;
     --text: #1a1a1a;
-    --text-light: #666;
+    --text-light: #555555;
+    --text-muted: #888888;
     --card-bg: #ffffff;
+    --border: #e5e5e5;
+    --shadow: rgba(0, 0, 0, 0.1);
 }
 
 /* Global Styles */
