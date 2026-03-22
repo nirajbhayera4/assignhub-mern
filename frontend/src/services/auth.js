@@ -1,16 +1,31 @@
 import api from './api';
 
+const normalizeStoredUser = (user) => {
+  if (!user) {
+    return null;
+  }
+
+  return {
+    ...user,
+    _id: user._id || user.id,
+  };
+};
+
 // Register new user
 export const register = async (userData) => {
   try {
     const response = await api.post('/auth/register', userData);
-    const { token, user } = response.data;
+    const token = response.data?.token;
+    const user = normalizeStoredUser(response.data?.data);
 
     // Store token and user data
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(user));
 
-    return response.data;
+    return {
+      ...response.data,
+      user,
+    };
   } catch (error) {
     console.error('Error registering user:', error);
     throw error;
@@ -21,13 +36,17 @@ export const register = async (userData) => {
 export const login = async (credentials) => {
   try {
     const response = await api.post('/auth/login', credentials);
-    const { token, user } = response.data;
+    const token = response.data?.token;
+    const user = normalizeStoredUser(response.data?.data);
 
     // Store token and user data
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(user));
 
-    return response.data;
+    return {
+      ...response.data,
+      user,
+    };
   } catch (error) {
     console.error('Error logging in:', error);
     throw error;
@@ -38,7 +57,7 @@ export const login = async (credentials) => {
 export const getMe = async () => {
   try {
     const response = await api.get('/auth/me');
-    const user = response.data;
+    const user = normalizeStoredUser(response.data?.data);
 
     // Update stored user data
     localStorage.setItem('user', JSON.stringify(user));
@@ -54,7 +73,7 @@ export const getMe = async () => {
 export const updateUserDetails = async (userData) => {
   try {
     const response = await api.put('/auth/updatedetails', userData);
-    const user = response.data;
+    const user = normalizeStoredUser(response.data?.data);
 
     // Update stored user data
     localStorage.setItem('user', JSON.stringify(user));
@@ -81,5 +100,5 @@ export const isAuthenticated = () => {
 // Get stored user data
 export const getStoredUser = () => {
   const user = localStorage.getItem('user');
-  return user ? JSON.parse(user) : null;
+  return user ? normalizeStoredUser(JSON.parse(user)) : null;
 };

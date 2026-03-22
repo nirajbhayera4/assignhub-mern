@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { getStoredUser, isAuthenticated, logout } from '../services/auth';
 import '../styles/Navigation.css';
 
 const Navigation = ({ userRole, setUserRole }) => {
   const [showRoleMenu, setShowRoleMenu] = useState(false);
+  const authenticated = isAuthenticated();
+  const storedUser = getStoredUser();
+  const walletBalance = storedUser?.wallet?.balance || 0;
 
   return (
     <nav className="marketplace-nav">
@@ -25,61 +29,68 @@ const Navigation = ({ userRole, setUserRole }) => {
         </div>
 
         <div className="nav-right">
-          {/* Wallet */}
-          <Link to="/wallet" className="wallet-indicator">
-            <span className="wallet-icon">💰</span>
-            <span className="wallet-amount">$2,450.50</span>
-          </Link>
+          {authenticated ? (
+            <>
+              <Link to="/wallet" className="wallet-indicator">
+                <span className="wallet-icon">💰</span>
+                <span className="wallet-amount">${walletBalance.toFixed(2)}</span>
+              </Link>
 
-          {/* Role Switcher */}
-          <div className="role-switcher">
-            <button 
-              className="role-toggle-btn"
-              onClick={() => setShowRoleMenu(!showRoleMenu)}
-            >
-              <span className="role-icon">
-                {userRole === 'worker' ? '👨‍💼' : '📚'}
-              </span>
-              <span className="role-text">
-                {userRole === 'worker' ? 'Worker' : 'Provider'}
-              </span>
-              <span className="toggle-arrow">▼</span>
-            </button>
+              <div className="role-switcher">
+                <button
+                  className="role-toggle-btn"
+                  onClick={() => setShowRoleMenu(!showRoleMenu)}
+                >
+                  <span className="role-icon">
+                    {userRole === 'worker' ? '👨‍💼' : '📚'}
+                  </span>
+                  <span className="role-text">
+                    {userRole === 'worker' ? 'Worker' : 'Provider'}
+                  </span>
+                  <span className="toggle-arrow">▼</span>
+                </button>
 
-            {showRoleMenu && (
-              <div className="role-dropdown-menu">
-                <button 
-                  className={`role-option ${userRole === 'worker' ? 'active' : ''}`}
-                  onClick={() => {
-                    setUserRole('worker');
-                    setShowRoleMenu(false);
-                  }}
-                >
-                  <span className="role-option-icon">👨‍💼</span>
-                  <div className="role-option-text">
-                    <p className="role-option-title">Work & Earn</p>
-                    <p className="role-option-desc">Complete assignments</p>
+                {showRoleMenu && (
+                  <div className="role-dropdown-menu">
+                    <button
+                      className={`role-option ${userRole === 'worker' ? 'active' : ''}`}
+                      onClick={() => {
+                        setUserRole('worker');
+                        setShowRoleMenu(false);
+                      }}
+                    >
+                      <span className="role-option-icon">👨‍💼</span>
+                      <div className="role-option-text">
+                        <p className="role-option-title">Work & Earn</p>
+                        <p className="role-option-desc">Complete assignments</p>
+                      </div>
+                    </button>
+                    <button
+                      className={`role-option ${userRole === 'provider' ? 'active' : ''}`}
+                      onClick={() => {
+                        setUserRole('provider');
+                        setShowRoleMenu(false);
+                      }}
+                    >
+                      <span className="role-option-icon">📚</span>
+                      <div className="role-option-text">
+                        <p className="role-option-title">Provider</p>
+                        <p className="role-option-desc">Post assignments</p>
+                      </div>
+                    </button>
                   </div>
-                </button>
-                <button 
-                  className={`role-option ${userRole === 'provider' ? 'active' : ''}`}
-                  onClick={() => {
-                    setUserRole('provider');
-                    setShowRoleMenu(false);
-                  }}
-                >
-                  <span className="role-option-icon">📚</span>
-                  <div className="role-option-text">
-                    <p className="role-option-title">Provider</p>
-                    <p className="role-option-desc">Post assignments</p>
-                  </div>
-                </button>
+                )}
               </div>
-            )}
-          </div>
 
-          {/* Profile */}
-          <button className="nav-profile-btn">👤</button>
+              <button className="nav-profile-btn" onClick={logout}>
+                {storedUser?.name?.charAt(0)?.toUpperCase() || '👤'}
+              </button>
+            </>
+          ) : (
+            <Link to="/login" className="cta-btn">
+              Login
+            </Link>
+          )}
         </div>
       </div>
     </nav>
