@@ -1,9 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import React, { useState } from 'react';
 import '../styles/Marketplace.css';
-
-gsap.registerPlugin(ScrollTrigger);
 
 const Marketplace = () => {
   const [assignments] = useState([
@@ -77,58 +73,6 @@ const Marketplace = () => {
 
   const [sortBy, setSortBy] = useState('recent');
   const [filterCategory, setFilterCategory] = useState('all');
-
-  useEffect(() => {
-    // Animate header
-    gsap.from('.marketplace-header', {
-      opacity: 0,
-      y: -50,
-      duration: 0.8,
-      ease: 'power3.out'
-    });
-
-    // Animate filter section
-    gsap.from('.marketplace-filters', {
-      opacity: 0,
-      y: 30,
-      duration: 0.6,
-      delay: 0.2,
-      ease: 'power2.out'
-    });
-
-    // Animate assignment items
-    gsap.from('.marketplace-card', {
-      scrollTrigger: {
-        trigger: '.marketplace-grid',
-        start: 'top 80%',
-        toggleActions: 'play none none reverse'
-      },
-      opacity: 0,
-      y: 100,
-      duration: 0.8,
-      stagger: 0.1,
-      ease: 'power3.out'
-    });
-
-    // Hover effects
-    document.querySelectorAll('.marketplace-card').forEach((card) => {
-      card.addEventListener('mouseenter', () => {
-        gsap.to(card, {
-          y: -15,
-          boxShadow: '0 30px 60px rgba(0, 255, 136, 0.2)',
-          duration: 0.3
-        });
-      });
-
-      card.addEventListener('mouseleave', () => {
-        gsap.to(card, {
-          y: 0,
-          boxShadow: '0 10px 30px rgba(0, 0, 0, 0.08)',
-          duration: 0.3
-        });
-      });
-    });
-  }, []);
 
   return (
     <div className="marketplace-page">

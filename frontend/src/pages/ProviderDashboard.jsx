@@ -1,9 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import React, { useState } from 'react';
 import '../styles/ProviderDashboard.css';
-
-gsap.registerPlugin(ScrollTrigger);
 
 const ProviderDashboard = () => {
   const [postedAssignments, setPostedAssignments] = useState([
@@ -35,59 +31,6 @@ const ProviderDashboard = () => {
       workers: 0
     }
   ]);
-
-  useEffect(() => {
-    // Animate header
-    gsap.from('.provider-header', {
-      opacity: 0,
-      y: -50,
-      duration: 0.8,
-      ease: 'power3.out'
-    });
-
-    // Animate action cards
-    gsap.from('.action-card', {
-      opacity: 0,
-      y: 50,
-      duration: 0.8,
-      delay: 0.2,
-      stagger: 0.15,
-      ease: 'power3.out'
-    });
-
-    // Animate assignment items on scroll
-    gsap.from('.assignment-item', {
-      scrollTrigger: {
-        trigger: '.assignments-list',
-        start: 'top 80%',
-        toggleActions: 'play none none reverse'
-      },
-      opacity: 0,
-      x: -100,
-      duration: 0.8,
-      stagger: 0.2,
-      ease: 'power3.out'
-    });
-
-    // Hover animations
-    document.querySelectorAll('.action-card').forEach((card) => {
-      card.addEventListener('mouseenter', () => {
-        gsap.to(card, {
-          y: -10,
-          boxShadow: '0 20px 50px rgba(0, 255, 136, 0.2)',
-          duration: 0.3
-        });
-      });
-
-      card.addEventListener('mouseleave', () => {
-        gsap.to(card, {
-          y: 0,
-          boxShadow: '0 10px 30px rgba(0, 0, 0, 0.08)',
-          duration: 0.3
-        });
-      });
-    });
-  }, []);
 
   return (
     <div className="provider-dashboard">

@@ -1,9 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import React, { useState } from 'react';
 import '../styles/Wallet.css';
-
-gsap.registerPlugin(ScrollTrigger);
 
 const Wallet = () => {
   const [transactions, setTransactions] = useState([
@@ -15,59 +11,6 @@ const Wallet = () => {
   ]);
 
   const [activeTab, setActiveTab] = useState('overview');
-
-  useEffect(() => {
-    // Animate wallet header
-    gsap.from('.wallet-header', {
-      opacity: 0,
-      y: -50,
-      duration: 0.8,
-      ease: 'power3.out'
-    });
-
-    // Animate balance cards
-    gsap.from('.balance-card-item', {
-      opacity: 0,
-      y: 50,
-      duration: 0.8,
-      delay: 0.2,
-      stagger: 0.15,
-      ease: 'power3.out'
-    });
-
-    // Animate transaction items on scroll
-    gsap.from('.transaction-item', {
-      scrollTrigger: {
-        trigger: '.transactions-container',
-        start: 'top 80%',
-        toggleActions: 'play none none reverse'
-      },
-      opacity: 0,
-      x: -50,
-      duration: 0.6,
-      stagger: 0.1,
-      ease: 'power2.out'
-    });
-
-    // Hover animation for cards
-    document.querySelectorAll('.balance-card-item').forEach((card) => {
-      card.addEventListener('mouseenter', () => {
-        gsap.to(card, {
-          y: -10,
-          boxShadow: '0 20px 50px rgba(0, 255, 136, 0.2)',
-          duration: 0.3
-        });
-      });
-
-      card.addEventListener('mouseleave', () => {
-        gsap.to(card, {
-          y: 0,
-          boxShadow: '0 10px 30px rgba(0, 0, 0, 0.08)',
-          duration: 0.3
-        });
-      });
-    });
-  }, []);
 
   return (
     <div className="wallet-page">

@@ -1,49 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import gsap from 'gsap';
 import '../styles/Navigation.css';
 
 const Navigation = ({ userRole, setUserRole }) => {
   const [showRoleMenu, setShowRoleMenu] = useState(false);
-
-  useEffect(() => {
-    // Animate navbar on load
-    gsap.from('nav', {
-      y: -100,
-      opacity: 0,
-      duration: 0.8,
-      ease: 'power3.out'
-    });
-
-    // Hover animations for nav links
-    document.querySelectorAll('.nav-item').forEach((item) => {
-      item.addEventListener('mouseenter', () => {
-        gsap.to(item, {
-          color: '#00ff88',
-          duration: 0.2
-        });
-      });
-
-      item.addEventListener('mouseleave', () => {
-        gsap.to(item, {
-          color: '#333',
-          duration: 0.2
-        });
-      });
-    });
-  }, []);
-
-  useEffect(() => {
-    // Animate role menu when it appears/disappears
-    if (showRoleMenu) {
-      gsap.from('.role-dropdown-menu', {
-        opacity: 0,
-        y: -10,
-        duration: 0.3,
-        ease: 'power2.out'
-      });
-    }
-  }, [showRoleMenu]);
 
   return (
     <nav className="marketplace-nav">
