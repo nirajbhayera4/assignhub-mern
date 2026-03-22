@@ -75,11 +75,11 @@ const Marketplace = () => {
               className="filter-select"
             >
               <option value="all">All Categories</option>
-              <option value="web">Web Development</option>
-              <option value="design">Design</option>
-              <option value="writing">Writing</option>
-              <option value="data">Data Science</option>
-              <option value="ai">AI/ML</option>
+              <option value="Web Development">Web Development</option>
+              <option value="Design">Design</option>
+              <option value="Writing">Writing</option>
+              <option value="Data Science">Data Science</option>
+              <option value="AI/ML">AI/ML</option>
             </select>
           </div>
 

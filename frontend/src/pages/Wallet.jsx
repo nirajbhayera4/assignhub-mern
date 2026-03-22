@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { getWallet, getTransactions, getStoredUser } from '../services/auth';
+import { getStoredUser } from '../services/auth';
+import { getWallet, getTransactions } from '../services/users';
 import '../styles/Wallet.css';
 
 const Wallet = () => {

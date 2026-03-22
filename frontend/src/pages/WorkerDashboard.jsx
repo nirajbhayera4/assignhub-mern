@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getAssignments } from '../services/assignments';
-import { getWallet, getStoredUser } from '../services/auth';
+import { getStoredUser } from '../services/auth';
+import { getWallet } from '../services/users';
 import '../styles/WorkerDashboard.css';
 
 const WorkerDashboard = () => {
@@ -45,9 +46,10 @@ const WorkerDashboard = () => {
 
   const filteredAssignments = assignments.filter(assignment => {
     if (activeFilter === 'all') return true;
-    if (activeFilter === 'available') return assignment.status === 'open';
+    if (activeFilter === 'available') return assignment.status === 'Open';
     if (activeFilter === 'applied') return assignment.applications?.some(app => app.worker === getStoredUser()?._id);
-    return true;
+
+    return assignment.difficulty?.toLowerCase() === activeFilter;
   });
 
   return (

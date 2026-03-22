@@ -1,10 +1,20 @@
 import api from './api';
 
+const normalizeAssignmentsResponse = (payload) => ({
+  ...payload,
+  assignments: Array.isArray(payload?.data) ? payload.data : [],
+});
+
+const normalizeAssignmentResponse = (payload) => ({
+  ...payload,
+  assignment: payload?.data || null,
+});
+
 // Get all assignments with optional filters
 export const getAssignments = async (params = {}) => {
   try {
     const response = await api.get('/assignments', { params });
-    return response.data;
+    return normalizeAssignmentsResponse(response.data);
   } catch (error) {
     console.error('Error fetching assignments:', error);
     throw error;
@@ -15,7 +25,7 @@ export const getAssignments = async (params = {}) => {
 export const getAssignment = async (id) => {
   try {
     const response = await api.get(`/assignments/${id}`);
-    return response.data;
+    return normalizeAssignmentResponse(response.data);
   } catch (error) {
     console.error('Error fetching assignment:', error);
     throw error;
@@ -69,8 +79,10 @@ export const applyToAssignment = async (id, applicationData) => {
 // Get assignments by provider
 export const getProviderAssignments = async (providerId) => {
   try {
-    const response = await api.get(`/assignments?provider=${providerId}`);
-    return response.data;
+    const response = await api.get('/assignments', {
+      params: { provider: providerId },
+    });
+    return normalizeAssignmentsResponse(response.data);
   } catch (error) {
     console.error('Error fetching provider assignments:', error);
     throw error;
