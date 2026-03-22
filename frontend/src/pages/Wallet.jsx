@@ -1,16 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { getWallet, getTransactions, getStoredUser } from '../services/auth';
 import '../styles/Wallet.css';
 
 const Wallet = () => {
-  const [transactions, setTransactions] = useState([
-    { id: 1, type: 'Earned', amount: 150, description: 'Python Data Analysis Project', date: '2026-03-20' },
-    { id: 2, type: 'Withdrawn', amount: 500, description: 'Bank Transfer', date: '2026-03-18' },
-    { id: 3, type: 'Earned', amount: 85, description: 'Marketing Strategy Essay', date: '2026-03-15' },
-    { id: 4, type: 'Earned', amount: 200, description: 'React.js E-commerce Site (Partial)', date: '2026-03-10' },
-    { id: 5, type: 'Earned', amount: 75, description: 'Physics Lab Report', date: '2026-03-08' },
-  ]);
-
+  const [wallet, setWallet] = useState({
+    balance: 0,
+    earned: 0,
+    pending: 0,
+    withdrawn: 0
+  });
+  const [transactions, setTransactions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('overview');
+
+  useEffect(() => {
+    fetchWalletData();
+  }, []);
+
+  const fetchWalletData = async () => {
+    try {
+      setLoading(true);
+
+      const user = getStoredUser();
+      if (user && user._id) {
+        // Fetch wallet data
+        const walletData = await getWallet(user._id);
+        setWallet(walletData);
+
+        // Fetch transactions
+        const transactionsData = await getTransactions(user._id);
+        setTransactions(transactionsData.transactions || []);
+      }
+
+      setError(null);
+    } catch (err) {
+      console.error('Failed to fetch wallet data:', err);
+      setError('Failed to load wallet data. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="wallet-page">
@@ -32,7 +62,7 @@ const Wallet = () => {
             <div className="card-icon">💰</div>
             <div className="card-content">
               <p>Available Balance</p>
-              <h2>$2,450.50</h2>
+              <h2>${wallet.balance?.toFixed(2) || '0.00'}</h2>
               <button className="withdraw-btn-card">Withdraw Now</button>
             </div>
           </div>
@@ -41,8 +71,8 @@ const Wallet = () => {
             <div className="card-icon">⏳</div>
             <div className="card-content">
               <p>Pending Earnings</p>
-              <h2>$780.00</h2>
-              <span className="card-info">From 2 active projects</span>
+              <h2>${wallet.pending?.toFixed(2) || '0.00'}</h2>
+              <span className="card-info">From active projects</span>
             </div>
           </div>
 
@@ -50,7 +80,7 @@ const Wallet = () => {
             <div className="card-icon">📊</div>
             <div className="card-content">
               <p>Total Earned</p>
-              <h2>$8,950.50</h2>
+              <h2>${wallet.earned?.toFixed(2) || '0.00'}</h2>
               <span className="card-info">All time earnings</span>
             </div>
           </div>
@@ -59,7 +89,7 @@ const Wallet = () => {
             <div className="card-icon">🏦</div>
             <div className="card-content">
               <p>Total Withdrawn</p>
-              <h2>$6,500.00</h2>
+              <h2>${wallet.withdrawn?.toFixed(2) || '0.00'}</h2>
               <span className="card-info">To your bank account</span>
             </div>
           </div>
@@ -128,20 +158,43 @@ const Wallet = () => {
             </div>
 
             <div className="transactions-container">
-              {transactions.map((transaction) => (
-                <div key={transaction.id} className="transaction-item">
-                  <div className="transaction-icon">
-                    {transaction.type === 'Earned' ? '✅' : '💸'}
-                  </div>
-                  <div className="transaction-details">
-                    <h4>{transaction.description}</h4>
-                    <p>{transaction.date}</p>
-                  </div>
-                  <div className={`transaction-amount ${transaction.type.toLowerCase()}`}>
-                    {transaction.type === 'Earned' ? '+' : '-'}${transaction.amount.toFixed(2)}
-                  </div>
+              {loading ? (
+                <div className="loading-state">
+                  <div className="loading-spinner"></div>
+                  <p>Loading transactions...</p>
                 </div>
-              ))}
+              ) : error ? (
+                <div className="error-state">
+                  <p>{error}</p>
+                  <button onClick={fetchWalletData} className="retry-btn">Retry</button>
+                </div>
+              ) : transactions.length === 0 ? (
+                <div className="empty-state">
+                  <p>No transactions found.</p>
+                </div>
+              ) : (
+                transactions.map((transaction) => (
+                  <div key={transaction._id} className="transaction-item">
+                    <div className="transaction-icon">
+                      {transaction.type === 'earned' ? '✅' :
+                       transaction.type === 'withdrawn' ? '💸' :
+                       transaction.type === 'refunded' ? '↩️' : '💰'}
+                    </div>
+                    <div className="transaction-details">
+                      <h4>
+                        {transaction.assignment?.title || transaction.description || 'Transaction'}
+                      </h4>
+                      <p>{new Date(transaction.createdAt).toLocaleDateString()}</p>
+                    </div>
+                    <div className={`transaction-amount ${transaction.type}`}>
+                      {transaction.type === 'earned' ? '+' :
+                       transaction.type === 'withdrawn' ? '-' :
+                       transaction.type === 'refunded' ? '+' : ''}
+                      ${transaction.amount?.toFixed(2) || '0.00'}
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         )}
@@ -155,14 +208,14 @@ const Wallet = () => {
                 <h3>Step 1: Select Amount</h3>
                 <div className="amount-input-wrapper">
                   <span className="currency">$</span>
-                  <input 
-                    type="number" 
-                    placeholder="Enter amount" 
+                  <input
+                    type="number"
+                    placeholder="Enter amount"
                     className="amount-input"
-                    max="2450.50"
+                    max={wallet.balance || 0}
                   />
                 </div>
-                <p className="available-info">Available to withdraw: $2,450.50</p>
+                <p className="available-info">Available to withdraw: ${wallet.balance?.toFixed(2) || '0.00'}</p>
               </div>
 
               <div className="form-section">

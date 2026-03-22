@@ -1,78 +1,55 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { getAssignments } from '../services/assignments';
 import '../styles/Marketplace.css';
 
 const Marketplace = () => {
-  const [assignments] = useState([
-    {
-      id: 1,
-      title: 'Machine Learning Model Development',
-      category: 'AI/ML',
-      budget: 500,
-      difficulty: 'Hard',
-      deadline: '14 days',
-      postedBy: 'John Doe',
-      rating: 4.8,
-      applications: 3
-    },
-    {
-      id: 2,
-      title: 'WordPress Blog Setup',
-      category: 'Web Development',
-      budget: 150,
-      difficulty: 'Easy',
-      deadline: '3 days',
-      postedBy: 'Jane Smith',
-      rating: 4.9,
-      applications: 7
-    },
-    {
-      id: 3,
-      title: 'Mobile App UI Design',
-      category: 'Design',
-      budget: 300,
-      difficulty: 'Medium',
-      deadline: '7 days',
-      postedBy: 'Alex Johnson',
-      rating: 4.7,
-      applications: 5
-    },
-    {
-      id: 4,
-      title: 'Content Writing - 20 Blog Posts',
-      category: 'Writing',
-      budget: 400,
-      difficulty: 'Easy',
-      deadline: '21 days',
-      postedBy: 'Sarah Williams',
-      rating: 4.9,
-      applications: 12
-    },
-    {
-      id: 5,
-      title: 'Data Analysis Report',
-      category: 'Data Science',
-      budget: 250,
-      difficulty: 'Medium',
-      deadline: '10 days',
-      postedBy: 'Mike Brown',
-      rating: 4.6,
-      applications: 4
-    },
-    {
-      id: 6,
-      title: 'E-commerce Platform Development',
-      category: 'Web Development',
-      budget: 800,
-      difficulty: 'Hard',
-      deadline: '30 days',
-      postedBy: 'Emily Davis',
-      rating: 5.0,
-      applications: 2
-    },
-  ]);
-
+  const [assignments, setAssignments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [sortBy, setSortBy] = useState('recent');
   const [filterCategory, setFilterCategory] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
+
+  useEffect(() => {
+    fetchAssignments();
+  }, [sortBy, filterCategory]);
+
+  const fetchAssignments = async () => {
+    try {
+      setLoading(true);
+      const params = {};
+
+      // Add sorting
+      if (sortBy === 'highest') {
+        params.sort = '-budget';
+      } else if (sortBy === 'deadline') {
+        params.sort = 'deadline';
+      } else if (sortBy === 'popular') {
+        params.sort = '-applications';
+      } else {
+        params.sort = '-createdAt'; // recent
+      }
+
+      // Add category filter
+      if (filterCategory !== 'all') {
+        params.subject = filterCategory;
+      }
+
+      const data = await getAssignments(params);
+      setAssignments(data.assignments || []);
+      setError(null);
+    } catch (err) {
+      console.error('Failed to fetch assignments:', err);
+      setError('Failed to load assignments. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredAssignments = assignments.filter(assignment =>
+    assignment.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    assignment.description.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="marketplace-page">
@@ -142,44 +119,73 @@ const Marketplace = () => {
           </div>
         </div>
 
+        {/* Search Bar */}
+        <div className="marketplace-search">
+          <input
+            type="text"
+            placeholder="Search assignments..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+        </div>
+
         {/* Assignments Grid */}
         <div className="marketplace-grid">
-          {assignments.map((assignment) => (
-            <div key={assignment.id} className="marketplace-card">
-              <div className="card-badge">
-                <span className={`badge-category ${assignment.category.toLowerCase().replace(/\//g, '-')}`}>
-                  {assignment.category}
-                </span>
-                <span className={`badge-difficulty ${assignment.difficulty.toLowerCase()}`}>
-                  {assignment.difficulty}
-                </span>
-              </div>
-
-              <h3 className="card-title">{assignment.title}</h3>
-              
-              <div className="card-meta">
-                <span className="meta-item">👤 {assignment.postedBy}</span>
-                <span className="meta-item">⭐ {assignment.rating}</span>
-              </div>
-
-              <div className="card-details">
-                <div className="detail-box">
-                  <p className="detail-label">Budget</p>
-                  <p className="detail-value">${assignment.budget}</p>
-                </div>
-                <div className="detail-box">
-                  <p className="detail-label">Timeline</p>
-                  <p className="detail-value">{assignment.deadline}</p>
-                </div>
-                <div className="detail-box">
-                  <p className="detail-label">Applications</p>
-                  <p className="detail-value">{assignment.applications}</p>
-                </div>
-              </div>
-
-              <button className="view-details-btn">View Details & Apply</button>
+          {loading ? (
+            <div className="loading-state">
+              <div className="loading-spinner"></div>
+              <p>Loading assignments...</p>
             </div>
-          ))}
+          ) : error ? (
+            <div className="error-state">
+              <p>{error}</p>
+              <button onClick={fetchAssignments} className="retry-btn">Retry</button>
+            </div>
+          ) : filteredAssignments.length === 0 ? (
+            <div className="empty-state">
+              <p>No assignments found matching your criteria.</p>
+            </div>
+          ) : (
+            filteredAssignments.map((assignment) => (
+              <div key={assignment._id} className="marketplace-card">
+                <div className="card-badge">
+                  <span className={`badge-category ${assignment.subject?.toLowerCase().replace(/\//g, '-') || 'general'}`}>
+                    {assignment.subject || 'General'}
+                  </span>
+                  <span className={`badge-difficulty ${assignment.difficulty?.toLowerCase() || 'medium'}`}>
+                    {assignment.difficulty || 'Medium'}
+                  </span>
+                </div>
+
+                <h3 className="card-title">{assignment.title}</h3>
+
+                <div className="card-meta">
+                  <span className="meta-item">👤 {assignment.provider?.name || 'Anonymous'}</span>
+                  <span className="meta-item">⭐ {assignment.provider?.rating || '4.5'}</span>
+                </div>
+
+                <div className="card-details">
+                  <div className="detail-box">
+                    <p className="detail-label">Budget</p>
+                    <p className="detail-value">${assignment.budget}</p>
+                  </div>
+                  <div className="detail-box">
+                    <p className="detail-label">Timeline</p>
+                    <p className="detail-value">
+                      {assignment.deadline ? new Date(assignment.deadline).toLocaleDateString() : 'Flexible'}
+                    </p>
+                  </div>
+                  <div className="detail-box">
+                    <p className="detail-label">Applications</p>
+                    <p className="detail-value">{assignment.applications?.length || 0}</p>
+                  </div>
+                </div>
+
+                <button className="view-details-btn">View Details & Apply</button>
+              </div>
+            ))
+          )}
         </div>
 
         {/* Load More */}
