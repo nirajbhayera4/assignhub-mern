@@ -1,4 +1,237 @@
-/* Navigation Styles */
+/* Marketplace Navigation */
+.marketplace-nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 1rem 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.95);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    gap: 2rem;
+}
+
+.nav-logo {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #0f0f0f;
+    letter-spacing: -0.05em;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.nav-logo span {
+    background: linear-gradient(135deg, #00ff88, #ff3366);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.nav-logo:hover {
+    transform: scale(1.05);
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    flex: 1;
+}
+
+.nav-item {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    font-size: 0.95rem;
+    position: relative;
+    transition: color 0.3s ease;
+    padding: 0.5rem 0;
+    border-bottom: 2px solid transparent;
+}
+
+.nav-item::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(135deg, #00ff88, #ff3366);
+    transition: width 0.3s ease;
+}
+
+.nav-item:hover::after {
+    width: 100%;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+/* Wallet Indicator */
+.wallet-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(255, 51, 102, 0.05));
+    padding: 0.8rem 1.5rem;
+    border-radius: 50px;
+    border: 1px solid rgba(0, 255, 136, 0.2);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.wallet-icon {
+    font-size: 1.2rem;
+}
+
+.wallet-amount {
+    font-weight: 700;
+    background: linear-gradient(135deg, #00ff88, #ff3366);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.wallet-indicator:hover {
+    border-color: #00ff88;
+    box-shadow: 0 8px 20px rgba(0, 255, 136, 0.2);
+    transform: translateY(-2px);
+}
+
+/* Role Switcher */
+.role-switcher {
+    position: relative;
+}
+
+.role-toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: white;
+    border: 2px solid #ddd;
+    padding: 0.8rem 1.5rem;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+}
+
+.role-icon {
+    font-size: 1.2rem;
+}
+
+.toggle-arrow {
+    font-size: 0.7rem;
+    transition: transform 0.3s ease;
+}
+
+.role-toggle-btn:hover {
+    border-color: #00ff88;
+    box-shadow: 0 8px 20px rgba(0, 255, 136, 0.1);
+}
+
+.role-toggle-btn:hover .toggle-arrow {
+    transform: translateY(2px);
+}
+
+.role-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    z-index: 1001;
+    min-width: 280px;
+    overflow: hidden;
+}
+
+.role-option {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    padding: 1.2rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+}
+
+.role-option:last-child {
+    border-bottom: none;
+}
+
+.role-option:hover {
+    background: rgba(0, 255, 136, 0.1);
+}
+
+.role-option.active {
+    background: linear-gradient(135deg, rgba(0, 255, 136, 0.15), rgba(255, 51, 102, 0.05));
+    border-left: 4px solid #00ff88;
+}
+
+.role-option-icon {
+    font-size: 1.8rem;
+    min-width: 40px;
+}
+
+.role-option-text {
+    flex: 1;
+}
+
+.role-option-title {
+    font-weight: 700;
+    color: #0f0f0f;
+    margin-bottom: 0.2rem;
+}
+
+.role-option-desc {
+    font-size: 0.8rem;
+    color: #999;
+}
+
+/* Profile Button */
+.nav-profile-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #00ff88, #ff3366);
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-profile-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 20px rgba(0, 255, 136, 0.3);
+}
+
+/* Old Navigation Styles (for fallback) */
 nav {
     position: fixed;
     top: 0;
@@ -25,40 +258,6 @@ nav {
     color: var(--accent);
 }
 
-.nav-links {
-    display: flex;
-    gap: 2.5rem;
-    align-items: center;
-}
-
-.nav-links a {
-    text-decoration: none;
-    color: var(--text);
-    font-weight: 500;
-    font-size: 0.95rem;
-    position: relative;
-    transition: color 0.3s;
-}
-
-.nav-links a:hover {
-    color: var(--accent);
-}
-
-.nav-links a::after {
-    content: '';
-    position: absolute;
-    bottom: -5px;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: var(--accent);
-    transition: width 0.3s;
-}
-
-.nav-links a:hover::after {
-    width: 100%;
-}
-
 .cta-btn {
     background: var(--primary);
     color: white;
@@ -77,7 +276,52 @@ nav {
 }
 
 @media (max-width: 968px) {
+    .marketplace-nav {
+        padding: 0.8rem 3%;
+    }
+
+    .nav-container {
+        gap: 1rem;
+    }
+
     .nav-links {
+        gap: 1rem;
+        font-size: 0.9rem;
+    }
+
+    .nav-item {
+        font-size: 0.85rem;
+    }
+
+    .wallet-indicator {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .wallet-amount {
         display: none;
+    }
+
+    .role-toggle-btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .role-text {
+        display: none;
+    }
+
+    .nav-logo {
+        font-size: 1.4rem;
+    }
+
+    @media (max-width: 640px) {
+        .nav-links {
+            display: none;
+        }
+
+        .nav-container {
+            justify-content: space-between;
+        }
     }
 }
