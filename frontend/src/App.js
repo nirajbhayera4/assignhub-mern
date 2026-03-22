@@ -17,7 +17,8 @@ function App() {
       <div className="App">
         <Navigation userRole={userRole} setUserRole={setUserRole} />
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<RoleSelection />} />
+          <Route path="/home" element={<Home />} />
           <Route path="/role-selection" element={<RoleSelection />} />
           <Route path="/worker-dashboard" element={<WorkerDashboard />} />
           <Route path="/provider-dashboard" element={<ProviderDashboard />} />
