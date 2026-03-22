@@ -85,6 +85,39 @@ export const updateUserDetails = async (userData) => {
   }
 };
 
+export const requestPasswordResetOtp = async (email) => {
+  try {
+    const response = await api.post('/auth/forgot-password', { email });
+    return response.data;
+  } catch (error) {
+    console.error('Error requesting password reset OTP:', error);
+    throw error;
+  }
+};
+
+export const resetPassword = async ({ email, otp, password }) => {
+  try {
+    const response = await api.post('/auth/reset-password', {
+      email,
+      otp,
+      password,
+    });
+    const token = response.data?.token;
+    const user = normalizeStoredUser(response.data?.data);
+
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(user));
+
+    return {
+      ...response.data,
+      user,
+    };
+  } catch (error) {
+    console.error('Error resetting password:', error);
+    throw error;
+  }
+};
+
 // Logout user
 export const logout = () => {
   localStorage.removeItem('token');

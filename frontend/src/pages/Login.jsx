@@ -3,6 +3,25 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { login } from '../services/auth';
 import '../styles/Login.css';
 
+const validateLoginForm = ({ email, password }) => {
+  const nextErrors = {};
+  const trimmedEmail = email.trim();
+
+  if (!trimmedEmail) {
+    nextErrors.email = 'Email is required.';
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+    nextErrors.email = 'Enter a valid email address.';
+  }
+
+  if (!password) {
+    nextErrors.password = 'Password is required.';
+  } else if (password.length < 6) {
+    nextErrors.password = 'Password must be at least 6 characters.';
+  }
+
+  return nextErrors;
+};
+
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -12,24 +31,54 @@ const Login = () => {
     email: '',
     password: '',
   });
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [touchedFields, setTouchedFields] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setFormData((current) => ({
-      ...current,
+    const nextFormData = {
+      ...formData,
       [name]: value,
+    };
+
+    setFormData(nextFormData);
+    setFieldErrors(validateLoginForm(nextFormData));
+    setError('');
+  };
+
+  const handleBlur = (event) => {
+    const { name } = event.target;
+
+    setTouchedFields((current) => ({
+      ...current,
+      [name]: true,
     }));
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    const validationErrors = validateLoginForm(formData);
+
+    setFieldErrors(validationErrors);
+    setTouchedFields({
+      email: true,
+      password: true,
+    });
+
+    if (Object.keys(validationErrors).length > 0) {
+      return;
+    }
+
     setLoading(true);
     setError('');
 
     try {
-      await login(formData);
+      await login({
+        email: formData.email.trim(),
+        password: formData.password,
+      });
       navigate(redirectTo, { replace: true });
     } catch (err) {
       setError(
@@ -74,10 +123,19 @@ const Login = () => {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
+                onBlur={handleBlur}
                 placeholder="you@example.com"
                 autoComplete="email"
+                className={touchedFields.email && fieldErrors.email ? 'input-error' : ''}
+                aria-invalid={Boolean(touchedFields.email && fieldErrors.email)}
+                aria-describedby={fieldErrors.email ? 'login-email-error' : undefined}
                 required
               />
+              {touchedFields.email && fieldErrors.email ? (
+                <p id="login-email-error" className="login-field-error">
+                  {fieldErrors.email}
+                </p>
+              ) : null}
             </label>
 
             <label className="login-field">
@@ -87,10 +145,19 @@ const Login = () => {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
+                onBlur={handleBlur}
                 placeholder="Enter your password"
                 autoComplete="current-password"
+                className={touchedFields.password && fieldErrors.password ? 'input-error' : ''}
+                aria-invalid={Boolean(touchedFields.password && fieldErrors.password)}
+                aria-describedby={fieldErrors.password ? 'login-password-error' : undefined}
                 required
               />
+              {touchedFields.password && fieldErrors.password ? (
+                <p id="login-password-error" className="login-field-error">
+                  {fieldErrors.password}
+                </p>
+              ) : null}
             </label>
 
             {error ? <p className="login-error">{error}</p> : null}

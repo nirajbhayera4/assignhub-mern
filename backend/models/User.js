@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 
 const userSchema = new mongoose.Schema({
@@ -105,6 +106,8 @@ const userSchema = new mongoose.Schema({
     default: false
   },
   lastLogin: Date,
+  resetPasswordOtp: String,
+  resetPasswordOtpExpire: Date,
   createdAt: {
     type: Date,
     default: Date.now
@@ -114,11 +117,12 @@ const userSchema = new mongoose.Schema({
 // Encrypt password using bcrypt
 userSchema.pre('save', async function(next) {
   if (!this.isModified('password')) {
-    next();
+    return next();
   }
 
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
+  next();
 });
 
 // Sign JWT and return
@@ -131,6 +135,18 @@ userSchema.methods.getSignedJwtToken = function() {
 // Match user entered password to hashed password in database
 userSchema.methods.matchPassword = async function(enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
+};
+
+userSchema.methods.generatePasswordResetOtp = function() {
+  const otp = `${Math.floor(100000 + Math.random() * 900000)}`;
+
+  this.resetPasswordOtp = crypto
+    .createHash('sha256')
+    .update(otp)
+    .digest('hex');
+  this.resetPasswordOtpExpire = Date.now() + 10 * 60 * 1000;
+
+  return otp;
 };
 
 // Update wallet balance

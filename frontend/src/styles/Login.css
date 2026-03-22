@@ -145,6 +145,17 @@
   box-shadow: 0 0 0 4px rgba(15, 15, 15, 0.08);
 }
 
+.login-field input.input-error {
+  border-color: #d92d20;
+  box-shadow: 0 0 0 4px rgba(217, 45, 32, 0.08);
+}
+
+.login-field-error {
+  color: #b42318;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
 .login-error {
   color: #b42318;
   background: rgba(180, 35, 24, 0.08);
