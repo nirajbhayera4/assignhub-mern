@@ -82,7 +82,7 @@ const seedData = async () => {
         budget: 500,
         deadline: new Date('2026-04-15'),
         provider: users[0]._id,
-        status: 'open',
+        status: 'Open',
         applications: []
       },
       {
@@ -93,7 +93,7 @@ const seedData = async () => {
         budget: 150,
         deadline: new Date('2026-03-25'),
         provider: users[1]._id,
-        status: 'open',
+        status: 'Open',
         applications: []
       },
       {
@@ -104,7 +104,7 @@ const seedData = async () => {
         budget: 300,
         deadline: new Date('2026-04-10'),
         provider: users[0]._id,
-        status: 'open',
+        status: 'Open',
         applications: []
       },
       {
@@ -115,7 +115,7 @@ const seedData = async () => {
         budget: 400,
         deadline: new Date('2026-05-01'),
         provider: users[1]._id,
-        status: 'open',
+        status: 'Open',
         applications: []
       },
       {
@@ -126,7 +126,7 @@ const seedData = async () => {
         budget: 250,
         deadline: new Date('2026-04-05'),
         provider: users[0]._id,
-        status: 'open',
+        status: 'Open',
         applications: []
       },
       {
@@ -137,7 +137,7 @@ const seedData = async () => {
         budget: 800,
         deadline: new Date('2026-06-01'),
         provider: users[1]._id,
-        status: 'open',
+        status: 'Open',
         applications: []
       }
     ]);
