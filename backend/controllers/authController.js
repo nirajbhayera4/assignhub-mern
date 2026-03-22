@@ -1,12 +1,29 @@
 const crypto = require('crypto');
+const mongoose = require('mongoose');
 const User = require('../models/User');
 const sendEmail = require('../utils/sendEmail');
+
+const ensureDatabaseConnection = (res) => {
+  if (mongoose.connection.readyState !== 1) {
+    res.status(503).json({
+      success: false,
+      message: 'Database unavailable. Check your MongoDB Atlas connection and try again.'
+    });
+    return false;
+  }
+
+  return true;
+};
 
 // @desc    Register user
 // @route   POST /api/auth/register
 // @access  Public
 exports.register = async (req, res, next) => {
   try {
+    if (!ensureDatabaseConnection(res)) {
+      return;
+    }
+
     const { name, email, password, role } = req.body;
 
     // Create user
@@ -31,6 +48,10 @@ exports.register = async (req, res, next) => {
 // @access  Public
 exports.login = async (req, res, next) => {
   try {
+    if (!ensureDatabaseConnection(res)) {
+      return;
+    }
+
     const { email, password } = req.body;
 
     // Validate email & password
@@ -79,6 +100,10 @@ exports.login = async (req, res, next) => {
 // @access  Private
 exports.getMe = async (req, res, next) => {
   try {
+    if (!ensureDatabaseConnection(res)) {
+      return;
+    }
+
     const user = await User.findById(req.user.id);
 
     res.status(200).json({
@@ -98,6 +123,10 @@ exports.getMe = async (req, res, next) => {
 // @access  Private
 exports.updateDetails = async (req, res, next) => {
   try {
+    if (!ensureDatabaseConnection(res)) {
+      return;
+    }
+
     const fieldsToUpdate = {
       name: req.body.name,
       email: req.body.email,
@@ -127,6 +156,10 @@ exports.updateDetails = async (req, res, next) => {
 // @access  Public
 exports.forgotPassword = async (req, res, next) => {
   try {
+    if (!ensureDatabaseConnection(res)) {
+      return;
+    }
+
     const { email } = req.body;
 
     if (!email) {
@@ -195,6 +228,10 @@ exports.forgotPassword = async (req, res, next) => {
 // @access  Public
 exports.resetPassword = async (req, res, next) => {
   try {
+    if (!ensureDatabaseConnection(res)) {
+      return;
+    }
+
     const { email, otp, password } = req.body;
 
     if (!email || !otp || !password) {

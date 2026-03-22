@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { getAssignments } from '../services/assignments';
+import {
+  getAssignments,
+  getUpworkMarketplaceAssignments,
+} from '../services/assignments';
 import '../styles/Marketplace.css';
 
 const Marketplace = () => {
   const [assignments, setAssignments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [marketplaceNotice, setMarketplaceNotice] = useState('');
   const [sortBy, setSortBy] = useState('recent');
   const [filterCategory, setFilterCategory] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
@@ -35,12 +39,42 @@ const Marketplace = () => {
         params.subject = filterCategory;
       }
 
-      const data = await getAssignments(params);
-      setAssignments(data.assignments || []);
+      const [localResult, upworkResult] = await Promise.allSettled([
+        getAssignments(params),
+        getUpworkMarketplaceAssignments({
+          search: searchTerm,
+          subject: filterCategory !== 'all' ? filterCategory : undefined,
+          limit: 12,
+        }),
+      ]);
+
+      const localAssignments =
+        localResult.status === 'fulfilled' ? localResult.value.assignments || [] : [];
+      const upworkAssignments =
+        upworkResult.status === 'fulfilled' ? upworkResult.value.assignments || [] : [];
+
+      setAssignments([...upworkAssignments, ...localAssignments]);
+
+      if (upworkResult.status === 'rejected') {
+        setMarketplaceNotice(
+          upworkResult.reason?.response?.data?.message ||
+            'Upwork marketplace feed is unavailable right now. Showing local assignments only.'
+        );
+      } else if (upworkAssignments.length > 0) {
+        setMarketplaceNotice('Live Upwork marketplace assignments are included below.');
+      } else {
+        setMarketplaceNotice('');
+      }
+
+      if (localResult.status === 'rejected' && upworkResult.status === 'rejected') {
+        throw localResult.reason || upworkResult.reason;
+      }
+
       setError(null);
     } catch (err) {
       console.error('Failed to fetch assignments:', err);
       setError('Failed to load assignments. Please try again.');
+      setMarketplaceNotice('');
     } finally {
       setLoading(false);
     }
@@ -64,6 +98,12 @@ const Marketplace = () => {
           <h1>Explore Marketplace</h1>
           <p>Discover thousands of assignments waiting to be completed</p>
         </div>
+
+        {marketplaceNotice ? (
+          <div className="empty-state" style={{ marginBottom: '1.5rem' }}>
+            <p>{marketplaceNotice}</p>
+          </div>
+        ) : null}
 
         {/* Filters */}
         <div className="marketplace-filters">
@@ -178,11 +218,24 @@ const Marketplace = () => {
                   </div>
                   <div className="detail-box">
                     <p className="detail-label">Applications</p>
-                    <p className="detail-value">{assignment.applications?.length || 0}</p>
+                    <p className="detail-value">
+                      {(assignment.applicationCount ?? assignment.applications?.length) || 0}
+                    </p>
                   </div>
                 </div>
 
-                <button className="view-details-btn">View Details & Apply</button>
+                {assignment.externalUrl ? (
+                  <a
+                    className="view-details-btn"
+                    href={assignment.externalUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    View Upwork Listing
+                  </a>
+                ) : (
+                  <button className="view-details-btn">View Details & Apply</button>
+                )}
               </div>
             ))
           )}

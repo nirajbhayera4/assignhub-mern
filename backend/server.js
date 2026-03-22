@@ -2,6 +2,7 @@ const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const helmet = require('helmet');
+const mongoose = require('mongoose');
 const morgan = require('morgan');
 const connectDB = require('./config/db');
 
@@ -26,6 +27,19 @@ app.use(helmet());
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
+
+// Short-circuit API requests when MongoDB is unavailable instead of letting
+// Mongoose buffer model operations until they time out.
+app.use('/api', (req, res, next) => {
+  if (mongoose.connection.readyState !== 1) {
+    return res.status(503).json({
+      success: false,
+      message: 'Database unavailable. Start MongoDB and try again.'
+    });
+  }
+
+  next();
+});
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));

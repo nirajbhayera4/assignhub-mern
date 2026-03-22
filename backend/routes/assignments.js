@@ -2,6 +2,7 @@ const express = require('express');
 const {
   getAssignments,
   getAssignment,
+  getUpworkMarketplaceAssignments,
   createAssignment,
   updateAssignment,
   deleteAssignment,
@@ -17,6 +18,10 @@ const { protect } = require('../middleware/auth');
 const advancedResults = require('../middleware/advancedResults');
 
 // Routes
+router
+  .route('/external/upwork')
+  .get(getUpworkMarketplaceAssignments);
+
 router
   .route('/')
   .get(getAssignments)

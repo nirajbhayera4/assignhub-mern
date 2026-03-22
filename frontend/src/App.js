@@ -6,8 +6,10 @@ import {
   Routes,
   useLocation,
 } from 'react-router-dom';
+import ForgotPassword from './pages/ForgotPassword';
 import Home from './pages/Home';
 import Login from './pages/Login';
+import Register from './pages/Register';
 import RoleSelection from './pages/RoleSelection';
 import WorkerDashboard from './pages/WorkerDashboard';
 import ProviderDashboard from './pages/ProviderDashboard';
@@ -30,7 +32,9 @@ function ProtectedRoute({ children }) {
 function AppContent() {
   const [userRole, setUserRole] = useState('worker');
   const location = useLocation();
-  const hideNavigation = location.pathname === '/login';
+  const hideNavigation = ['/login', '/register', '/forgot-password'].includes(
+    location.pathname
+  );
 
   return (
     <div className="App">
@@ -40,6 +44,8 @@ function AppContent() {
       <Routes>
         <Route path="/" element={<RoleSelection />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/role-selection" element={<RoleSelection />} />
         <Route
           path="/home"

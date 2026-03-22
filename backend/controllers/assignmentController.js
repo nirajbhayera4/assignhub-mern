@@ -2,6 +2,9 @@ const Assignment = require('../models/Assignment');
 const Application = require('../models/Application');
 const User = require('../models/User');
 const asyncHandler = require('../middleware/async');
+const {
+  fetchUpworkMarketplaceAssignments,
+} = require('../services/upworkMarketplaceService');
 
 // @desc    Get all assignments
 // @route   GET /api/assignments
@@ -247,4 +250,28 @@ exports.applyToAssignment = asyncHandler(async (req, res, next) => {
     success: true,
     data: application
   });
+});
+
+// @desc    Get external marketplace assignments from Upwork
+// @route   GET /api/assignments/external/upwork
+// @access  Public
+exports.getUpworkMarketplaceAssignments = asyncHandler(async (req, res, next) => {
+  try {
+    const assignments = await fetchUpworkMarketplaceAssignments({
+      search: req.query.search,
+      subject: req.query.subject,
+      limit: req.query.limit,
+    });
+
+    res.status(200).json({
+      success: true,
+      count: assignments.length,
+      data: assignments,
+    });
+  } catch (error) {
+    res.status(error.statusCode || 500).json({
+      success: false,
+      message: error.message || 'Unable to load Upwork marketplace assignments.',
+    });
+  }
 });

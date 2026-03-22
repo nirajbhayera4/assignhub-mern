@@ -166,6 +166,11 @@ const Login = () => {
               {loading ? 'Signing in...' : 'Login'}
             </button>
           </form>
+
+          <div className="auth-links">
+            <Link to="/register">Create account</Link>
+            <Link to="/forgot-password">Forgot password?</Link>
+          </div>
         </div>
       </div>
     </div>

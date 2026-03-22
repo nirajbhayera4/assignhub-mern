@@ -88,3 +88,13 @@ export const getProviderAssignments = async (providerId) => {
     throw error;
   }
 };
+
+export const getUpworkMarketplaceAssignments = async (params = {}) => {
+  try {
+    const response = await api.get('/assignments/external/upwork', { params });
+    return normalizeAssignmentsResponse(response.data);
+  } catch (error) {
+    console.error('Error fetching Upwork marketplace assignments:', error);
+    throw error;
+  }
+};
