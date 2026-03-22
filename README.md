@@ -1,291 +1,234 @@
-# AssignHub-mern
+# AssignHub MERN
 
-A premium, modern website for an assignment marketplace platform connecting students with expert helpers. Built with GSAP animations and ready for MERN stack integration.
+AssignHub is a MERN-based assignment marketplace. It includes a React frontend, an Express/MongoDB backend, authentication flows, wallet/profile endpoints, and a marketplace view that can combine your local assignments with an external Upwork feed when configured.
 
-## 🚀 Features
+## Stack
 
-- **Premium Design**: Bold, modern aesthetic with distinctive typography
-- **GSAP Animations**: Smooth, professional animations throughout
-- **Fully Responsive**: Mobile-first design approach
-- **Modular Architecture**: Separated CSS and JS files for easy maintenance
-- **MERN Stack Ready**: Clean structure for backend integration
-- **Performance Optimized**: Minimal dependencies, fast loading
+- Frontend: React, React Router, Axios, CRA dev server
+- Backend: Express, Mongoose, JWT auth
+- Database: MongoDB Atlas or local MongoDB
+- Optional external marketplace feed: Upwork GraphQL API
 
-## 📁 Project Structure
+## Project Structure
 
-```
-assignhub-landing/
-├── index.html                 # Main HTML file
-├── css/
-│   ├── variables.css         # CSS custom properties (design tokens)
-│   ├── base.css              # Reset, typography, utilities
-│   ├── navigation.css        # Navigation bar styles
-│   ├── hero.css              # Hero section styles
-│   ├── stats.css             # Statistics section styles
-│   ├── how-it-works.css      # Steps section styles
-│   ├── features.css          # Features grid styles
-│   ├── cta.css               # Call-to-action section styles
-│   ├── footer.css            # Footer styles
-│   └── responsive.css        # Mobile & tablet breakpoints
-├── js/
-│   ├── cursor.js             # Custom cursor animation
-│   ├── navigation.js         # Navigation animations
-│   ├── hero-animations.js    # Hero section GSAP animations
-│   ├── stats-counter.js      # Animated statistics counter
-│   ├── scroll-animations.js  # Scroll-triggered animations
-│   └── smooth-scroll.js      # Smooth scroll navigation
-├── assets/                   # Images, icons (to be added)
-└── README.md                 # This file
+```text
+assignhub-mern/
+├── backend/
+│   ├── config/
+│   ├── controllers/
+│   ├── middleware/
+│   ├── models/
+│   ├── routes/
+│   ├── services/
+│   ├── utils/
+│   ├── seed.js
+│   ├── server.js
+│   └── .env
+├── frontend/
+│   ├── public/
+│   ├── src/
+│   ├── package.json
+│   └── .env
+└── README.md
 ```
 
-## 🛠️ Technologies Used
+## Features
 
-- **HTML5**: Semantic markup
-- **CSS3**: Modern CSS with custom properties
-- **JavaScript (ES6+)**: Vanilla JS for interactions
-- **GSAP 3.12.5**: Animation library
-- **Google Fonts**: Syne & JetBrains Mono
+- Account creation and login
+- Forgot-password flow with OTP reset
+- Protected frontend routes for authenticated users
+- Assignment marketplace backed by MongoDB
+- Worker and provider dashboard screens
+- Wallet and transaction endpoints
+- Optional Upwork marketplace import feed
 
-## 🎨 Design System
+## Prerequisites
 
-### Color Palette
-```css
---primary: #0f0f0f      /* Black */
---accent: #00ff88       /* Neon Green */
---accent-2: #ff3366     /* Hot Pink */
---bg: #fafafa           /* Light Gray Background */
---text: #1a1a1a         /* Dark Text */
---text-light: #666      /* Light Text */
+- Node.js 18+ recommended
+- npm
+- MongoDB Atlas connection string or local MongoDB
+
+## Environment Setup
+
+Create or update [`backend/.env`](/workspaces/assignhub-mern/backend/.env):
+
+```env
+NODE_ENV=development
+PORT=5000
+MONGO_URI=mongodb+srv://<username>:<password>@<cluster>/<database>?retryWrites=true&w=majority
+JWT_SECRET=replace_this_with_a_real_secret
+JWT_EXPIRE=30d
+EMAIL_SERVICE=gmail
+EMAIL_USERNAME=your-email@gmail.com
+EMAIL_PASSWORD=your-app-password
+EMAIL_FROM=AssignHub <noreply@assignhub.com>
+CLOUDINARY_CLOUD_NAME=your_cloud
+CLOUDINARY_API_KEY=your_key
+CLOUDINARY_API_SECRET=your_secret
+STRIPE_SECRET_KEY=your_stripe_secret
+STRIPE_PUBLISHABLE_KEY=your_stripe_public
+CLIENT_URL=http://localhost:3000
+UPWORK_ACCESS_TOKEN=
+UPWORK_ORG_ID=
 ```
 
-### Typography
-- **Headings**: Syne (800, 700, 600)
-- **Body**: Syne (400)
-- **Monospace**: JetBrains Mono (500, 400)
+Frontend env in [`frontend/.env`](/workspaces/assignhub-mern/frontend/.env):
 
-## 📦 Getting Started
+```env
+REACT_APP_API_URL=/api
+REACT_APP_SOCKET_URL=http://localhost:5000
+```
 
-### 1. Basic Setup (Static)
+Notes:
 
-Simply open `index.html` in a web browser:
+- If you use MongoDB Atlas, make sure your IP is allowed in Atlas Network Access.
+- If your MongoDB password contains special characters, URL-encode it in `MONGO_URI`.
+- `UPWORK_ACCESS_TOKEN` is optional. Without it, the marketplace falls back to local assignments only.
+
+## Install Dependencies
+
+Backend:
 
 ```bash
-# Navigate to project directory
-cd assignhub-landing
-
-# Open in default browser (macOS)
-open index.html
-
-# Or use a local server (recommended)
-python -m http.server 8000
-# Then visit: http://localhost:8000
+cd /workspaces/assignhub-mern/backend
+npm install
 ```
 
-### 2. Development Server
-
-For a better development experience, use a local server:
+Frontend:
 
 ```bash
-# Using Node.js http-server
-npx http-server -p 8000
-
-# Using Python
-python3 -m http.server 8000
-
-# Using PHP
-php -S localhost:8000
+cd /workspaces/assignhub-mern/frontend
+npm install
 ```
 
-## 🔧 Integration with MERN Stack
+## Run the App
 
-### Step 1: Convert to React Components
+Start backend:
 
-The current structure makes it easy to convert to React:
-
-1. **Create React App**
-   ```bash
-   npx create-react-app assignhub-frontend
-   cd assignhub-frontend
-   ```
-
-2. **Install Dependencies**
-   ```bash
-   npm install gsap
-   ```
-
-3. **Component Structure**
-   ```
-   src/
-   ├── components/
-   │   ├── Navigation/
-   │   │   ├── Navigation.jsx
-   │   │   └── Navigation.css
-   │   ├── Hero/
-   │   │   ├── Hero.jsx
-   │   │   └── Hero.css
-   │   ├── Stats/
-   │   ├── HowItWorks/
-   │   ├── Features/
-   │   ├── CTA/
-   │   └── Footer/
-   ├── styles/
-   │   ├── variables.css
-   │   └── base.css
-   └── App.jsx
-   ```
-
-### Step 2: Backend Integration
-
-1. **Create Express Server**
-   ```bash
-   mkdir backend
-   cd backend
-   npm init -y
-   npm install express mongoose cors dotenv
-   ```
-
-2. **API Endpoints to Create**
-   - `POST /api/assignments` - Create new assignment
-   - `GET /api/assignments` - Get all assignments
-   - `POST /api/experts` - Register expert
-   - `GET /api/experts` - Get experts list
-   - `POST /api/auth/login` - User authentication
-   - `POST /api/auth/register` - User registration
-
-### Step 3: MongoDB Schema Examples
-
-```javascript
-// Assignment Schema
-const assignmentSchema = new mongoose.Schema({
-  title: String,
-  description: String,
-  subject: String,
-  deadline: Date,
-  budget: Number,
-  student: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  expert: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  status: { type: String, enum: ['open', 'in_progress', 'completed'] }
-});
-
-// User Schema
-const userSchema = new mongoose.Schema({
-  name: String,
-  email: String,
-  password: String,
-  role: { type: String, enum: ['student', 'expert'] },
-  rating: Number,
-  completedAssignments: Number
-});
+```bash
+cd /workspaces/assignhub-mern/backend
+node server.js
 ```
 
-## 🎯 Customization Guide
+Start frontend:
 
-### Changing Colors
-
-Edit `css/variables.css`:
-
-```css
-:root {
-    --primary: #your-color;
-    --accent: #your-accent;
-    /* ... other variables */
-}
+```bash
+cd /workspaces/assignhub-mern/frontend
+npm start
 ```
 
-### Modifying Animations
+Default URLs:
 
-Edit the relevant JS file in the `js/` folder:
+- Frontend: `http://localhost:3000`
+- Backend: `http://localhost:5000`
 
-- **Speed**: Change `duration` values
-- **Timing**: Adjust `ease` functions
-- **Delays**: Modify `delay` properties
+## Seed Sample Data
 
-Example:
-```javascript
-// In js/hero-animations.js
-gsap.from('.hero-text h1', {
-    y: 100,
-    opacity: 0,
-    duration: 2,      // Slower animation
-    delay: 0.5,       // More delay
-    ease: 'elastic.out' // Different easing
-});
+To populate sample users and assignments:
+
+```bash
+cd /workspaces/assignhub-mern/backend
+node seed.js
 ```
 
-### Adding New Sections
+This clears existing `users` and `assignments` and inserts demo data.
 
-1. Create HTML in `index.html`
-2. Create CSS file in `css/your-section.css`
-3. Link CSS in `<head>` of index.html
-4. Add animations in `js/scroll-animations.js`
+## Available Scripts
 
-## 📱 Responsive Breakpoints
+Backend:
 
-- **Desktop**: > 968px
-- **Tablet**: 577px - 968px
-- **Mobile**: < 576px
+```bash
+npm start
+npm run dev
+```
 
-## 🚀 Performance Tips
+Frontend:
 
-1. **Optimize Images**: Use WebP format, compress images
-2. **Lazy Loading**: Add `loading="lazy"` to images
-3. **Minify**: Use CSS/JS minification for production
-4. **CDN**: Consider hosting fonts locally
-5. **Code Splitting**: When converting to React
+```bash
+npm start
+npm run build
+npm test
+```
 
-## 🔜 Future Enhancements
+## Main API Routes
 
-- [ ] Add mobile navigation menu (hamburger)
-- [ ] Implement search functionality
-- [ ] Add user authentication pages
-- [ ] Create expert profile pages
-- [ ] Build assignment posting form
-- [ ] Add real-time chat interface
-- [ ] Implement payment integration
-- [ ] Add admin dashboard
-- [ ] Create review/rating system
-- [ ] Add notification system
+Auth:
 
-## 📝 Best Practices Implemented
+- `POST /api/auth/register`
+- `POST /api/auth/login`
+- `POST /api/auth/forgot-password`
+- `POST /api/auth/reset-password`
+- `GET /api/auth/me`
 
-✅ Semantic HTML5  
-✅ CSS Custom Properties  
-✅ Modular CSS Architecture  
-✅ Separated concerns (HTML/CSS/JS)  
-✅ Mobile-first responsive design  
-✅ Accessibility considerations  
-✅ Performance optimized  
-✅ Commented code  
-✅ Consistent naming conventions  
+Assignments:
 
-## 🤝 Contributing
+- `GET /api/assignments`
+- `GET /api/assignments/:id`
+- `POST /api/assignments`
+- `POST /api/assignments/:id/apply`
+- `GET /api/assignments/external/upwork`
 
-When adding new features:
+Users:
 
-1. Create new CSS file for new sections
-2. Add animations in separate JS file
-3. Update this README
-4. Test on multiple devices
-5. Ensure responsive behavior
+- `GET /api/users/:id/wallet`
+- `GET /api/users/:id/transactions`
+- `POST /api/users/:id/withdraw`
 
-## 📄 License
+## Upwork Marketplace Integration
 
-This project is created for educational and commercial use.
+The app can pull real marketplace jobs from Upwork through:
 
-## 🙏 Credits
+- `GET /api/assignments/external/upwork`
 
-- **Fonts**: Google Fonts (Syne, JetBrains Mono)
-- **Animation**: GSAP by GreenSock
-- **Icons**: Emoji (can be replaced with icon library)
+To enable it:
 
-## 📞 Support
+1. Request an Upwork API key/app
+2. Complete the OAuth flow to obtain an access token
+3. Set `UPWORK_ACCESS_TOKEN` in [`backend/.env`](/workspaces/assignhub-mern/backend/.env)
+4. Restart the backend
 
-For questions or support:
-- Create an issue in the repository
-- Email: support@assignhub.com (update with your email)
+Without this token, the frontend shows local assignments only and displays a notice that the Upwork feed is unavailable.
 
----
+Official references:
 
-**Made with ❤️ for AssignHub**
+- Upwork developer docs: https://www.upwork.com/developer/documentation/graphql/api/docs/index.html
+- Upwork API key request: https://support.upwork.com/hc/en-us/articles/17995842326931--Request-an-API-key
 
+## Authentication Notes
 
+- Protected routes redirect unauthenticated users to the login page
+- Account creation stores JWT and user data in local storage
+- Forgot-password sends an OTP email when email config is valid
+- In development, if email is not configured, the OTP is returned in the API response
+
+## Common Issues
+
+MongoDB not connecting:
+
+- Check `MONGO_URI`
+- Confirm Atlas IP whitelist / Network Access
+- Confirm DB username/password
+- Restart backend after editing `.env`
+
+Frontend can’t reach backend:
+
+- Make sure backend is running on port `5000`
+- Frontend uses CRA proxy to `/api`
+
+Upwork feed unavailable:
+
+- `UPWORK_ACCESS_TOKEN` is missing or invalid
+- Upwork app/OAuth flow is not configured yet
+
+## Current Limitations
+
+- Several backend modules like bids, messages, payments, and reviews are still placeholders
+- Some UI pages are still scaffolds or partial implementations
+- The Upwork integration currently expects a manually supplied access token
+
+## Next Recommended Steps
+
+1. Add persistent token storage and OAuth callback flow for Upwork
+2. Finish real assignment detail/apply screens
+3. Complete wallet withdrawal UI flow
+4. Replace placeholder API modules with real implementations
