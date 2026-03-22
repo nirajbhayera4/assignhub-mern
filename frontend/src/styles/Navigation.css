@@ -58,3 +58,26 @@ nav {
 .nav-links a:hover::after {
     width: 100%;
 }
+
+.cta-btn {
+    background: var(--primary);
+    color: white;
+    padding: 0.8rem 1.8rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+    border: 2px solid var(--primary);
+}
+
+.cta-btn:hover {
+    background: transparent;
+    color: var(--primary);
+    transform: translateY(-2px);
+}
+
+@media (max-width: 968px) {
+    .nav-links {
+        display: none;
+    }
+}

@@ -1,5 +1,5 @@
 import React from 'react';
-import './HowItWorks.css';
+import '../styles/HowItWorks.css';
 
 const HowItWorks = () => {
   return (
