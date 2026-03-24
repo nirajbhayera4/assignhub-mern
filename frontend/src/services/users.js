@@ -4,7 +4,7 @@ import api from './api';
 export const getWallet = async (userId) => {
   try {
     const response = await api.get(`/users/${userId}/wallet`);
-    return response.data;
+    return response.data?.data || {};
   } catch (error) {
     console.error('Error fetching wallet:', error);
     throw error;
@@ -15,7 +15,10 @@ export const getWallet = async (userId) => {
 export const getTransactions = async (userId, params = {}) => {
   try {
     const response = await api.get(`/users/${userId}/transactions`, { params });
-    return response.data;
+    return {
+      transactions: response.data?.data || [],
+      count: response.data?.count || 0
+    };
   } catch (error) {
     console.error('Error fetching transactions:', error);
     throw error;
@@ -26,7 +29,7 @@ export const getTransactions = async (userId, params = {}) => {
 export const processWithdrawal = async (userId, withdrawalData) => {
   try {
     const response = await api.post(`/users/${userId}/withdraw`, withdrawalData);
-    return response.data;
+    return response.data?.data;
   } catch (error) {
     console.error('Error processing withdrawal:', error);
     throw error;

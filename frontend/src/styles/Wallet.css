@@ -422,6 +422,11 @@
     background: rgba(0, 255, 136, 0.05);
 }
 
+.method-option.selected {
+    border-color: #00ff88;
+    background: rgba(0, 255, 136, 0.08);
+}
+
 .method-option input[type="radio"] {
     width: 20px;
     height: 20px;
@@ -443,6 +448,37 @@
 .method-desc {
     color: #999;
     font-size: 0.85rem;
+}
+
+.upi-input {
+    width: 100%;
+    padding: 1rem 1.2rem;
+    border-radius: 16px;
+    border: 2px solid #ddd;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.upi-input:focus {
+    outline: none;
+    border-color: #00ff88;
+    box-shadow: 0 0 0 4px rgba(0, 255, 136, 0.1);
+}
+
+.withdraw-message {
+    border-radius: 14px;
+    margin-bottom: 1rem;
+    padding: 0.9rem 1rem;
+}
+
+.withdraw-error {
+    background: rgba(255, 26, 77, 0.1);
+    color: #b42318;
+}
+
+.withdraw-success {
+    background: rgba(0, 170, 85, 0.1);
+    color: #067647;
 }
 
 .review-details {
@@ -495,6 +531,13 @@
 .withdraw-confirm-btn:hover {
     transform: translateY(-3px);
     box-shadow: 0 10px 25px rgba(0, 255, 136, 0.3);
+}
+
+.withdraw-confirm-btn:disabled {
+    cursor: wait;
+    opacity: 0.75;
+    transform: none;
+    box-shadow: none;
 }
 
 @media (max-width: 768px) {

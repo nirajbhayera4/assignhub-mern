@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getStoredUser } from '../services/auth';
-import { getWallet, getTransactions } from '../services/users';
+import { getWallet, getTransactions, processWithdrawal } from '../services/users';
 import '../styles/Wallet.css';
 
 const Wallet = () => {
@@ -14,6 +14,11 @@ const Wallet = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('overview');
+  const [withdrawAmount, setWithdrawAmount] = useState('');
+  const [upiId, setUpiId] = useState('');
+  const [withdrawError, setWithdrawError] = useState('');
+  const [withdrawSuccess, setWithdrawSuccess] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     fetchWalletData();
@@ -27,7 +32,12 @@ const Wallet = () => {
       if (user && user._id) {
         // Fetch wallet data
         const walletData = await getWallet(user._id);
-        setWallet(walletData);
+        setWallet(walletData.wallet || {
+          balance: 0,
+          earned: 0,
+          pending: 0,
+          withdrawn: 0
+        });
 
         // Fetch transactions
         const transactionsData = await getTransactions(user._id);
@@ -42,6 +52,59 @@ const Wallet = () => {
       setLoading(false);
     }
   };
+
+  const handleWithdraw = async () => {
+    const user = getStoredUser();
+    const numericAmount = Number(withdrawAmount);
+
+    if (!user?._id) {
+      setWithdrawError('Please log in again to continue.');
+      return;
+    }
+
+    if (!Number.isFinite(numericAmount) || numericAmount <= 0) {
+      setWithdrawError('Enter a valid withdrawal amount.');
+      return;
+    }
+
+    if (numericAmount > (wallet.balance || 0)) {
+      setWithdrawError('Withdrawal amount cannot exceed your available balance.');
+      return;
+    }
+
+    if (!upiId.trim()) {
+      setWithdrawError('Enter your UPI ID.');
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      setWithdrawError('');
+      setWithdrawSuccess('');
+
+      await processWithdrawal(user._id, {
+        amount: numericAmount,
+        paymentMethod: 'upi',
+        upiId: upiId.trim()
+      });
+
+      setWithdrawSuccess('UPI withdrawal request submitted successfully.');
+      setWithdrawAmount('');
+      setUpiId('');
+      await fetchWalletData();
+      setActiveTab('transactions');
+    } catch (err) {
+      setWithdrawError(
+        err.response?.data?.message || 'Failed to submit withdrawal request. Please try again.'
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const formattedWithdrawAmount = withdrawAmount && Number(withdrawAmount) > 0
+    ? Number(withdrawAmount).toFixed(2)
+    : '0.00';
 
   return (
     <div className="wallet-page">
@@ -64,7 +127,13 @@ const Wallet = () => {
             <div className="card-content">
               <p>Available Balance</p>
               <h2>${wallet.balance?.toFixed(2) || '0.00'}</h2>
-              <button className="withdraw-btn-card">Withdraw Now</button>
+              <button
+                className="withdraw-btn-card"
+                onClick={() => setActiveTab('withdraw')}
+                type="button"
+              >
+                Withdraw via UPI
+              </button>
             </div>
           </div>
 
@@ -91,7 +160,7 @@ const Wallet = () => {
             <div className="card-content">
               <p>Total Withdrawn</p>
               <h2>${wallet.withdrawn?.toFixed(2) || '0.00'}</h2>
-              <span className="card-info">To your bank account</span>
+              <span className="card-info">To your linked UPI ID</span>
             </div>
           </div>
         </div>
@@ -125,7 +194,7 @@ const Wallet = () => {
               <div className="overview-card">
                 <h3>💡 Quick Tips</h3>
                 <ul>
-                  <li>💳 Link your bank account for instant withdrawals</li>
+                  <li>📱 Use your UPI ID for faster withdrawals</li>
                   <li>📈 Complete more assignments to increase your earnings</li>
                   <li>⭐ Maintain a high rating to attract better paying jobs</li>
                   <li>🔒 Your payment information is securely stored</li>
@@ -136,11 +205,11 @@ const Wallet = () => {
                 <h3>📅 Payment Schedule</h3>
                 <div className="schedule-item">
                   <span className="schedule-label">Payment Processing</span>
-                  <p>1-2 business days after withdrawal request</p>
+                  <p>Within 24 hours after withdrawal request</p>
                 </div>
                 <div className="schedule-item">
                   <span className="schedule-label">Settlement Time</span>
-                  <p>5-7 business days to your bank account</p>
+                  <p>Usually instant to your UPI app or bank</p>
                 </div>
                 <div className="schedule-item">
                   <span className="schedule-label">Minimum Withdrawal</span>
@@ -213,6 +282,8 @@ const Wallet = () => {
                     type="number"
                     placeholder="Enter amount"
                     className="amount-input"
+                    value={withdrawAmount}
+                    onChange={(event) => setWithdrawAmount(event.target.value)}
                     max={wallet.balance || 0}
                   />
                 </div>
@@ -222,40 +293,44 @@ const Wallet = () => {
               <div className="form-section">
                 <h3>Step 2: Select Withdrawal Method</h3>
                 <div className="withdrawal-methods">
-                  <label className="method-option">
-                    <input type="radio" name="method" defaultChecked />
+                  <label className="method-option selected">
+                    <input type="radio" name="method" checked readOnly />
                     <div className="method-info">
-                      <span className="method-name">🏦 Bank Transfer</span>
-                      <span className="method-desc">5-7 business days</span>
-                    </div>
-                  </label>
-                  <label className="method-option">
-                    <input type="radio" name="method" />
-                    <div className="method-info">
-                      <span className="method-name">💳 Credit Card</span>
-                      <span className="method-desc">Instant transfer (fees apply)</span>
-                    </div>
-                  </label>
-                  <label className="method-option">
-                    <input type="radio" name="method" />
-                    <div className="method-info">
-                      <span className="method-name">📱 Digital Wallet</span>
-                      <span className="method-desc">1-2 business days</span>
+                      <span className="method-name">📱 UPI</span>
+                      <span className="method-desc">Primary payout method for this wallet</span>
                     </div>
                   </label>
                 </div>
               </div>
 
               <div className="form-section">
-                <h3>Step 3: Review & Confirm</h3>
+                <h3>Step 3: Enter UPI ID</h3>
+                <input
+                  type="text"
+                  placeholder="yourname@bank"
+                  className="upi-input"
+                  value={upiId}
+                  onChange={(event) => setUpiId(event.target.value)}
+                />
+                <p className="available-info">Example: alex@okaxis or name@paytm</p>
+              </div>
+
+              <div className="form-section">
+                <h3>Step 4: Review & Confirm</h3>
+                {withdrawError ? <p className="withdraw-message withdraw-error">{withdrawError}</p> : null}
+                {withdrawSuccess ? <p className="withdraw-message withdraw-success">{withdrawSuccess}</p> : null}
                 <div className="review-details">
                   <div className="review-item">
                     <span>Amount:</span>
-                    <strong>$ (To be entered)</strong>
+                    <strong>${formattedWithdrawAmount}</strong>
                   </div>
                   <div className="review-item">
                     <span>Method:</span>
-                    <strong>Bank Transfer</strong>
+                    <strong>UPI</strong>
+                  </div>
+                  <div className="review-item">
+                    <span>UPI ID:</span>
+                    <strong>{upiId.trim() || 'Not entered yet'}</strong>
                   </div>
                   <div className="review-item">
                     <span>Processing Fee:</span>
@@ -263,11 +338,18 @@ const Wallet = () => {
                   </div>
                   <div className="review-item total">
                     <span>Total to Receive:</span>
-                    <strong>$ (To be calculated)</strong>
+                    <strong>${formattedWithdrawAmount}</strong>
                   </div>
                 </div>
 
-                <button className="withdraw-confirm-btn">Confirm Withdrawal</button>
+                <button
+                  className="withdraw-confirm-btn"
+                  onClick={handleWithdraw}
+                  disabled={isSubmitting}
+                  type="button"
+                >
+                  {isSubmitting ? 'Submitting...' : 'Confirm UPI Withdrawal'}
+                </button>
               </div>
             </div>
           </div>
