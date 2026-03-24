@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import '../styles/Footer.css';
 
 const Footer = () => {
@@ -12,28 +13,28 @@ const Footer = () => {
         <div className="footer-links">
           <h4>Platform</h4>
           <ul>
-            <li><a href="#">For Students</a></li>
-            <li><a href="#">For Experts</a></li>
-            <li><a href="#">How It Works</a></li>
-            <li><a href="#">Pricing</a></li>
+            <li><Link to="/role-selection">For Students</Link></li>
+            <li><Link to="/register?role=worker">For Experts</Link></li>
+            <li><Link to="/home">How It Works</Link></li>
+            <li><Link to="/marketplace">Marketplace</Link></li>
           </ul>
         </div>
         <div className="footer-links">
           <h4>Company</h4>
           <ul>
-            <li><a href="#">About Us</a></li>
-            <li><a href="#">Careers</a></li>
-            <li><a href="#">Blog</a></li>
-            <li><a href="#">Contact</a></li>
+            <li><Link to="/about">About Us</Link></li>
+            <li><Link to="/profile">Your Profile</Link></li>
+            <li><Link to="/provider-dashboard">Post Work</Link></li>
+            <li><Link to="/wallet">Wallet</Link></li>
           </ul>
         </div>
         <div className="footer-links">
           <h4>Legal</h4>
           <ul>
-            <li><a href="#">Privacy Policy</a></li>
-            <li><a href="#">Terms of Service</a></li>
-            <li><a href="#">Cookie Policy</a></li>
-            <li><a href="#">Guidelines</a></li>
+            <li><Link to="/about">Privacy Policy</Link></li>
+            <li><Link to="/about">Terms of Service</Link></li>
+            <li><Link to="/about">Cookie Policy</Link></li>
+            <li><Link to="/about">Guidelines</Link></li>
           </ul>
         </div>
       </div>

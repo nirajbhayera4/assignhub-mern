@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import '../styles/CTA.css';
 
 const CTA = () => {
@@ -8,8 +9,8 @@ const CTA = () => {
         <h2>Ready to Transform Your Academic Journey?</h2>
         <p>Join thousands of students getting better grades and experts earning meaningful income. Start today, completely free.</p>
         <div className="cta-buttons">
-          <a href="#" className="btn-white">Get Started Now</a>
-          <a href="#" className="btn-secondary" style={{borderColor: 'white', color: 'white'}}>Learn More</a>
+          <Link to="/register" className="btn-white">Get Started Now</Link>
+          <Link to="/about" className="btn-secondary" style={{borderColor: 'white', color: 'white'}}>Learn More</Link>
         </div>
       </div>
     </section>

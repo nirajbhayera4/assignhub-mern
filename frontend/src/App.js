@@ -7,6 +7,7 @@ import {
   useLocation,
 } from 'react-router-dom';
 import ForgotPassword from './pages/ForgotPassword';
+import About from './pages/About';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -19,6 +20,7 @@ import Wallet from './pages/Wallet';
 import Navigation from './components/Navigation';
 import { isAuthenticated } from './services/auth';
 import './App.css';
+import './styles/About.css';
 
 function ProtectedRoute({ children }) {
   const location = useLocation();
@@ -47,6 +49,7 @@ function AppContent() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/about" element={<About />} />
         <Route path="/role-selection" element={<RoleSelection />} />
         <Route
           path="/home"
