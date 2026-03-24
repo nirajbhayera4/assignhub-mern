@@ -9,6 +9,7 @@ const Profile = () => {
     email: '',
     bio: '',
     skills: '',
+    avatar: '',
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -26,6 +27,7 @@ const Profile = () => {
           email: user?.email || '',
           bio: user?.bio || '',
           skills: Array.isArray(user?.skills) ? user.skills.join(', ') : '',
+          avatar: user?.avatar || '',
         });
         setError('');
       } catch (err) {
@@ -50,6 +52,32 @@ const Profile = () => {
     setError('');
   };
 
+  const handleAvatarSelect = (event) => {
+    const file = event.target.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    if (!file.type.startsWith('image/')) {
+      setError('Please choose a valid image file.');
+      return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      setFormData((current) => ({
+        ...current,
+        avatar: reader.result || '',
+      }));
+      setSuccess('');
+      setError('');
+    };
+
+    reader.readAsDataURL(file);
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -63,6 +91,7 @@ const Profile = () => {
           .split(',')
           .map((skill) => skill.trim())
           .filter(Boolean),
+        avatar: formData.avatar,
       };
 
       await updateUserDetails(payload);
@@ -98,7 +127,15 @@ const Profile = () => {
       <div className="profile-shell">
         <section className="profile-header-card">
           <div className="profile-avatar-large">
-            {formData.name?.charAt(0)?.toUpperCase() || 'U'}
+            {formData.avatar ? (
+              <img
+                src={formData.avatar}
+                alt={formData.name || 'Profile'}
+                className="profile-avatar-image"
+              />
+            ) : (
+              formData.name?.charAt(0)?.toUpperCase() || 'U'
+            )}
           </div>
           <div className="profile-header-copy">
             <span className="profile-kicker">Logged In Profile</span>
@@ -117,6 +154,43 @@ const Profile = () => {
             <p className="profile-panel-text">
               Keep your name, bio, and skills current so your profile feels more complete and trustworthy.
             </p>
+
+            <div className="profile-photo-section">
+              <div className="profile-photo-preview">
+                {formData.avatar ? (
+                  <img
+                    src={formData.avatar}
+                    alt={formData.name || 'Profile'}
+                    className="profile-photo-image"
+                  />
+                ) : (
+                  <span>{formData.name?.charAt(0)?.toUpperCase() || 'U'}</span>
+                )}
+              </div>
+
+              <div className="profile-photo-actions">
+                <label className="profile-photo-btn">
+                  Upload from gallery
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleAvatarSelect}
+                    hidden
+                  />
+                </label>
+
+                <label className="profile-photo-btn secondary">
+                  Use camera
+                  <input
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    onChange={handleAvatarSelect}
+                    hidden
+                  />
+                </label>
+              </div>
+            </div>
 
             <form className="profile-form" onSubmit={handleSubmit}>
               <label className="profile-field">
@@ -180,7 +254,15 @@ const Profile = () => {
             <div className="profile-preview-card">
               <div className="profile-preview-top">
                 <div className="profile-avatar-small">
-                  {formData.name?.charAt(0)?.toUpperCase() || 'U'}
+                  {formData.avatar ? (
+                    <img
+                      src={formData.avatar}
+                      alt={formData.name || 'Profile'}
+                      className="profile-avatar-image"
+                    />
+                  ) : (
+                    formData.name?.charAt(0)?.toUpperCase() || 'U'
+                  )}
                 </div>
                 <div>
                   <h3>{formData.name || 'Your name'}</h3>

@@ -84,7 +84,15 @@ const Navigation = ({ userRole, setUserRole }) => {
 
               <div className="nav-profile-stack">
                 <Link to="/profile" className="nav-profile-btn">
-                  {storedUser?.name?.charAt(0)?.toUpperCase() || '👤'}
+                  {storedUser?.avatar ? (
+                    <img
+                      src={storedUser.avatar}
+                      alt={storedUser?.name || 'Profile'}
+                      className="nav-profile-image"
+                    />
+                  ) : (
+                    storedUser?.name?.charAt(0)?.toUpperCase() || '👤'
+                  )}
                 </Link>
                 <button className="nav-logout-btn" onClick={logout} type="button">
                   Logout

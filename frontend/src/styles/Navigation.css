@@ -233,6 +233,13 @@
     box-shadow: 0 8px 20px rgba(0, 255, 136, 0.3);
 }
 
+.nav-profile-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
 .nav-profile-stack {
     display: flex;
     align-items: center;
