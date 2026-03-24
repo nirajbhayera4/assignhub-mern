@@ -153,6 +153,11 @@ body {
         justify-content: center;
     }
 
+    .hero-signals {
+        grid-template-columns: 1fr;
+        max-width: 100%;
+    }
+
     .floating-cards {
         display: none;
     }

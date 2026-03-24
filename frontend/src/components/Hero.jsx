@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import '../styles/Hero.css';
 
 const Hero = () => {
@@ -8,15 +9,30 @@ const Hero = () => {
       <div className="bg-element bg-2"></div>
       <div className="hero-content">
         <div className="hero-text">
+          <div className="hero-eyebrow">Freelance marketplace for assignments, projects, and expert delivery</div>
           <h1>
             Connect. <br />
             Complete. <br />
             <span className="gradient-text">Collaborate.</span>
           </h1>
-          <p>The smartest way to get your assignments done. Students find help, experts earn money. Welcome to the future of academic collaboration.</p>
+          <p>Bring together the speed of a freelancing marketplace and the trust signals of an expert network. Post work, compare talent, manage milestones, and get paid securely in one workflow.</p>
           <div className="hero-buttons">
-            <a href="#" className="btn-primary">I Need Help</a>
-            <a href="#" className="btn-secondary">I Want to Earn</a>
+            <Link to="/register?role=provider" className="btn-primary">Hire Talent</Link>
+            <Link to="/register?role=worker" className="btn-secondary">Start Earning</Link>
+          </div>
+          <div className="hero-signals">
+            <div className="hero-signal-card">
+              <strong>Escrow-style flow</strong>
+              <span>Release payment only after approved delivery</span>
+            </div>
+            <div className="hero-signal-card">
+              <strong>Live talent marketplace</strong>
+              <span>Blend local assignments with external freelance demand</span>
+            </div>
+            <div className="hero-signal-card">
+              <strong>Fast expert matching</strong>
+              <span>Shortlist specialists by budget, speed, and skill</span>
+            </div>
           </div>
         </div>
         <div className="hero-visual">
