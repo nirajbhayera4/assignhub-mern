@@ -32,7 +32,12 @@ const transactionSchema = new mongoose.Schema({
   },
   paymentMethod: {
     type: String,
-    enum: ['bank_transfer', 'credit_card', 'digital_wallet', 'platform_credit']
+    enum: ['upi', 'bank_transfer', 'credit_card', 'digital_wallet', 'platform_credit']
+  },
+  upiId: {
+    type: String,
+    trim: true,
+    lowercase: true
   },
   transactionId: {
     type: String,

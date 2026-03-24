@@ -150,9 +150,34 @@ exports.processWithdrawal = async (req, res, next) => {
       });
     }
 
-    const { amount, paymentMethod } = req.body;
+    const { amount, paymentMethod, upiId } = req.body;
+    const numericAmount = Number(amount);
 
-    if (amount > user.wallet.balance) {
+    if (!Number.isFinite(numericAmount) || numericAmount <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please enter a valid withdrawal amount'
+      });
+    }
+
+    if (paymentMethod !== 'upi') {
+      return res.status(400).json({
+        success: false,
+        message: 'Only UPI withdrawals are supported'
+      });
+    }
+
+    const normalizedUpiId = upiId?.trim().toLowerCase();
+    const upiPattern = /^[a-z0-9._-]{2,256}@[a-z]{2,64}$/;
+
+    if (!normalizedUpiId || !upiPattern.test(normalizedUpiId)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide a valid UPI ID'
+      });
+    }
+
+    if (numericAmount > user.wallet.balance) {
       return res.status(400).json({
         success: false,
         message: 'Insufficient balance'
@@ -163,14 +188,15 @@ exports.processWithdrawal = async (req, res, next) => {
     const transaction = await Transaction.create({
       user: req.user.id,
       type: 'withdrawn',
-      amount,
-      description: `Withdrawal via ${paymentMethod}`,
+      amount: numericAmount,
+      description: `Withdrawal via UPI (${normalizedUpiId})`,
       status: 'pending',
-      paymentMethod
+      paymentMethod,
+      upiId: normalizedUpiId
     });
 
     // Update user wallet
-    user.updateWallet(amount, 'withdraw');
+    user.updateWallet(numericAmount, 'withdraw');
     await user.save();
 
     res.status(200).json({
