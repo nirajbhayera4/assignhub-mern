@@ -26,8 +26,12 @@ const getLoginErrorMessage = (error) => {
   const status = error.response?.status;
   const message = error.response?.data?.message;
 
+  if (!error.response) {
+    return 'Login failed because the backend server is unavailable. Start the backend and try again.';
+  }
+
   if (status === 401 && message === 'Invalid credentials') {
-    return 'No account matched that email and password. Create an account first, then sign in.';
+    return 'No account matched that email and password. Please use the same email you registered with.';
   }
 
   return message || 'Login failed. Check your credentials and try again.';

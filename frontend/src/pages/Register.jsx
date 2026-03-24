@@ -85,7 +85,7 @@ const Register = () => {
       navigate('/marketplace', { replace: true });
     } catch (err) {
       setError(
-        err.response?.data?.message || 'Unable to create your account right now.'
+        err.response?.data?.message || 'Unable to create your account because the backend server is unavailable.'
       );
     } finally {
       setLoading(false);
