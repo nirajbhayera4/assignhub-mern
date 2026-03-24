@@ -1,0 +1,79 @@
+.info-page {
+    min-height: 100vh;
+    padding-top: 100px;
+    background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+}
+
+.info-shell {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 3rem 5% 4rem;
+}
+
+.info-header {
+    margin-bottom: 2rem;
+    text-align: left;
+}
+
+.info-kicker {
+    display: inline-flex;
+    padding: 0.45rem 0.85rem;
+    border-radius: 999px;
+    background: rgba(15, 15, 15, 0.06);
+    color: #0f0f0f;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.info-header h1 {
+    margin: 1rem 0 0.8rem;
+    color: #0f0f0f;
+    font-size: clamp(2.4rem, 5vw, 4.2rem);
+    line-height: 0.98;
+    letter-spacing: -0.05em;
+}
+
+.info-header p {
+    max-width: 760px;
+    color: #5d6773;
+    line-height: 1.8;
+    font-size: 1.05rem;
+}
+
+.info-card {
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(15, 15, 15, 0.06);
+    border-radius: 28px;
+    box-shadow: 0 18px 44px rgba(15, 15, 15, 0.08);
+    padding: 2rem;
+}
+
+.info-card h2 {
+    margin-top: 1.4rem;
+    margin-bottom: 0.5rem;
+    color: #0f0f0f;
+    font-size: 1.25rem;
+}
+
+.info-card h2:first-child {
+    margin-top: 0;
+}
+
+.info-card p {
+    color: #66717d;
+    line-height: 1.8;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+}
