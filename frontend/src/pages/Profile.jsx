@@ -2,6 +2,39 @@ import React, { useEffect, useState } from 'react';
 import { getMe, getStoredUser, updateUserDetails } from '../services/auth';
 import '../styles/Profile.css';
 
+const resizeImageFile = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const image = new Image();
+
+      image.onload = () => {
+        const maxSize = 320;
+        const scale = Math.min(maxSize / image.width, maxSize / image.height, 1);
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(image.width * scale);
+        canvas.height = Math.round(image.height * scale);
+
+        const context = canvas.getContext('2d');
+
+        if (!context) {
+          reject(new Error('Unable to process image.'));
+          return;
+        }
+
+        context.drawImage(image, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL('image/jpeg', 0.78));
+      };
+
+      image.onerror = () => reject(new Error('Unable to read image.'));
+      image.src = reader.result;
+    };
+
+    reader.onerror = () => reject(new Error('Unable to load image file.'));
+    reader.readAsDataURL(file);
+  });
+
 const Profile = () => {
   const storedUser = getStoredUser();
   const [formData, setFormData] = useState({
@@ -52,7 +85,7 @@ const Profile = () => {
     setError('');
   };
 
-  const handleAvatarSelect = (event) => {
+  const handleAvatarSelect = async (event) => {
     const file = event.target.files?.[0];
 
     if (!file) {
@@ -64,18 +97,18 @@ const Profile = () => {
       return;
     }
 
-    const reader = new FileReader();
+    try {
+      const resizedAvatar = await resizeImageFile(file);
 
-    reader.onloadend = () => {
       setFormData((current) => ({
         ...current,
-        avatar: reader.result || '',
+        avatar: resizedAvatar,
       }));
       setSuccess('');
       setError('');
-    };
-
-    reader.readAsDataURL(file);
+    } catch (uploadError) {
+      setError(uploadError.message || 'Unable to process profile image.');
+    }
   };
 
   const handleSubmit = async (event) => {
@@ -94,11 +127,18 @@ const Profile = () => {
         avatar: formData.avatar,
       };
 
-      await updateUserDetails(payload);
+      const updatedUser = await updateUserDetails(payload);
+      setFormData((current) => ({
+        ...current,
+        avatar: updatedUser?.avatar || current.avatar,
+      }));
       setSuccess('Your profile details have been updated.');
     } catch (err) {
       setError(
-        err.response?.data?.message || 'Unable to save your profile right now.'
+        err.response?.data?.message ||
+          (err.response?.status === 413
+            ? 'Profile image is too large. Please choose a smaller image.'
+            : 'Unable to save your profile right now.')
       );
     } finally {
       setSaving(false);

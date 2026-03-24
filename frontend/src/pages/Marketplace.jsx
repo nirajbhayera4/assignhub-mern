@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import {
   getAssignments,
-  getUpworkMarketplaceAssignments,
+  getAdzunaMarketplaceAssignments,
 } from '../services/assignments';
 import '../styles/Marketplace.css';
 
@@ -78,7 +78,7 @@ const Marketplace = () => {
 
       const requests = [];
 
-      if (sourceFilter !== 'upwork') {
+      if (sourceFilter !== 'adzuna') {
         requests.push(getAssignments(params));
       } else {
         requests.push(Promise.resolve({ assignments: [] }));
@@ -86,7 +86,8 @@ const Marketplace = () => {
 
       if (sourceFilter !== 'local') {
         requests.push(
-          getUpworkMarketplaceAssignments({
+          getAdzunaMarketplaceAssignments({
+            search: searchTerm,
             subject: filterCategory !== 'all' ? filterCategory : undefined,
             limit: 12,
           })
@@ -95,7 +96,7 @@ const Marketplace = () => {
         requests.push(Promise.resolve({ assignments: [] }));
       }
 
-      const [localResult, upworkResult] = await Promise.allSettled(requests);
+      const [localResult, adzunaResult] = await Promise.allSettled(requests);
 
       const localAssignments =
         localResult.status === 'fulfilled'
@@ -104,31 +105,31 @@ const Marketplace = () => {
               source: 'local',
             }))
           : [];
-      const upworkAssignments =
-        upworkResult.status === 'fulfilled'
-          ? (upworkResult.value.assignments || []).map((assignment) => ({
+      const adzunaAssignments =
+        adzunaResult.status === 'fulfilled'
+          ? (adzunaResult.value.assignments || []).map((assignment) => ({
               ...assignment,
-              source: 'upwork',
+              source: 'adzuna',
             }))
           : [];
 
-      setAssignments([...upworkAssignments, ...localAssignments]);
+      setAssignments([...adzunaAssignments, ...localAssignments]);
 
-      if (upworkResult.status === 'rejected' && sourceFilter !== 'local') {
+      if (adzunaResult.status === 'rejected' && sourceFilter !== 'local') {
         setMarketplaceNotice(
-          upworkResult.reason?.response?.data?.message ||
+          adzunaResult.reason?.response?.data?.message ||
             'External freelance feed is unavailable right now. Showing AssignHub work only.'
         );
-      } else if (upworkAssignments.length > 0) {
-        setMarketplaceNotice('Marketplace includes AssignHub projects plus external freelance-style opportunities.');
+      } else if (adzunaAssignments.length > 0) {
+        setMarketplaceNotice('Marketplace includes AssignHub projects plus live Adzuna job opportunities.');
       } else if (sourceFilter === 'local') {
         setMarketplaceNotice('Showing AssignHub native jobs only.');
       } else {
         setMarketplaceNotice('');
       }
 
-      if (localResult.status === 'rejected' && upworkResult.status === 'rejected') {
-        throw localResult.reason || upworkResult.reason;
+      if (localResult.status === 'rejected' && adzunaResult.status === 'rejected') {
+        throw localResult.reason || adzunaResult.reason;
       }
 
       setError(null);
@@ -139,7 +140,7 @@ const Marketplace = () => {
     } finally {
       setLoading(false);
     }
-  }, [filterCategory, sortBy, sourceFilter]);
+  }, [filterCategory, searchTerm, sortBy, sourceFilter]);
 
   useEffect(() => {
     const storedAssignments = localStorage.getItem(SAVED_ASSIGNMENTS_KEY);
@@ -195,7 +196,7 @@ const Marketplace = () => {
   const averageBudget = filteredAssignments.length
     ? Math.round(totalBudget / filteredAssignments.length)
     : 0;
-  const upworkCount = filteredAssignments.filter((assignment) => assignment.source === 'upwork').length;
+  const adzunaCount = filteredAssignments.filter((assignment) => assignment.source === 'adzuna').length;
   const localCount = filteredAssignments.filter((assignment) => assignment.source === 'local').length;
   const featuredCollections = [
     {
@@ -265,15 +266,15 @@ const Marketplace = () => {
             AssignHub Native
           </button>
           <button
-            className={`source-pill ${sourceFilter === 'upwork' ? 'active' : ''}`}
-            onClick={() => setSourceFilter('upwork')}
+            className={`source-pill ${sourceFilter === 'adzuna' ? 'active' : ''}`}
+            onClick={() => setSourceFilter('adzuna')}
             type="button"
           >
-            External Freelance Feed
+            Adzuna Live Jobs
           </button>
           <div className="source-stats">
             <span>{localCount} local</span>
-            <span>{upworkCount} external</span>
+            <span>{adzunaCount} adzuna</span>
           </div>
         </div>
 
@@ -400,7 +401,7 @@ const Marketplace = () => {
                 <article key={assignment._id} className="marketplace-card">
                   <div className="card-topbar">
                     <span className={`source-tag ${assignment.source || 'local'}`}>
-                      {assignment.source === 'upwork' ? 'External' : 'AssignHub'}
+                      {assignment.source === 'adzuna' ? 'Adzuna' : 'AssignHub'}
                     </span>
                     <button
                       className={`save-job-btn ${isSaved ? 'saved' : ''}`}

@@ -1,5 +1,24 @@
 import api from './api';
 
+const persistStoredUser = (user) => {
+  try {
+    localStorage.setItem('user', JSON.stringify(user));
+  } catch (error) {
+    console.warn('Failed to persist full user in localStorage, retrying without avatar.', error);
+
+    if (!user) {
+      return;
+    }
+
+    const fallbackUser = {
+      ...user,
+      avatar: '',
+    };
+
+    localStorage.setItem('user', JSON.stringify(fallbackUser));
+  }
+};
+
 const normalizeStoredUser = (user) => {
   if (!user) {
     return null;
@@ -20,7 +39,7 @@ export const register = async (userData) => {
 
     // Store token and user data
     localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(user));
+    persistStoredUser(user);
 
     return {
       ...response.data,
@@ -41,7 +60,7 @@ export const login = async (credentials) => {
 
     // Store token and user data
     localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(user));
+    persistStoredUser(user);
 
     return {
       ...response.data,
@@ -60,7 +79,7 @@ export const getMe = async () => {
     const user = normalizeStoredUser(response.data?.data);
 
     // Update stored user data
-    localStorage.setItem('user', JSON.stringify(user));
+    persistStoredUser(user);
 
     return user;
   } catch (error) {
@@ -76,7 +95,7 @@ export const updateUserDetails = async (userData) => {
     const user = normalizeStoredUser(response.data?.data);
 
     // Update stored user data
-    localStorage.setItem('user', JSON.stringify(user));
+    persistStoredUser(user);
 
     return user;
   } catch (error) {
@@ -106,7 +125,7 @@ export const resetPassword = async ({ email, otp, password }) => {
     const user = normalizeStoredUser(response.data?.data);
 
     localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(user));
+    persistStoredUser(user);
 
     return {
       ...response.data,

@@ -2,7 +2,7 @@ const express = require('express');
 const {
   getAssignments,
   getAssignment,
-  getUpworkMarketplaceAssignments,
+  getAdzunaMarketplaceAssignments,
   createAssignment,
   updateAssignment,
   deleteAssignment,
@@ -19,8 +19,8 @@ const advancedResults = require('../middleware/advancedResults');
 
 // Routes
 router
-  .route('/external/upwork')
-  .get(getUpworkMarketplaceAssignments);
+  .route('/external/adzuna')
+  .get(getAdzunaMarketplaceAssignments);
 
 router
   .route('/')

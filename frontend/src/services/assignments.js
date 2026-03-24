@@ -89,12 +89,12 @@ export const getProviderAssignments = async (providerId) => {
   }
 };
 
-export const getUpworkMarketplaceAssignments = async (params = {}) => {
+export const getAdzunaMarketplaceAssignments = async (params = {}) => {
   try {
-    const response = await api.get('/assignments/external/upwork', { params });
+    const response = await api.get('/assignments/external/adzuna', { params });
     return normalizeAssignmentsResponse(response.data);
   } catch (error) {
-    console.error('Error fetching Upwork marketplace assignments:', error);
+    console.error('Error fetching Adzuna marketplace assignments:', error);
     throw error;
   }
 };

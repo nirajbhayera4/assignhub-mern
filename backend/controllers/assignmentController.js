@@ -3,8 +3,8 @@ const Application = require('../models/Application');
 const User = require('../models/User');
 const asyncHandler = require('../middleware/async');
 const {
-  fetchUpworkMarketplaceAssignments,
-} = require('../services/upworkMarketplaceService');
+  fetchAdzunaMarketplaceAssignments,
+} = require('../services/adzunaMarketplaceService');
 
 // @desc    Get all assignments
 // @route   GET /api/assignments
@@ -252,12 +252,12 @@ exports.applyToAssignment = asyncHandler(async (req, res, next) => {
   });
 });
 
-// @desc    Get external marketplace assignments from Upwork
-// @route   GET /api/assignments/external/upwork
+// @desc    Get external marketplace assignments from Adzuna
+// @route   GET /api/assignments/external/adzuna
 // @access  Public
-exports.getUpworkMarketplaceAssignments = asyncHandler(async (req, res, next) => {
+exports.getAdzunaMarketplaceAssignments = asyncHandler(async (req, res, next) => {
   try {
-    const assignments = await fetchUpworkMarketplaceAssignments({
+    const assignments = await fetchAdzunaMarketplaceAssignments({
       search: req.query.search,
       subject: req.query.subject,
       limit: req.query.limit,
@@ -271,7 +271,7 @@ exports.getUpworkMarketplaceAssignments = asyncHandler(async (req, res, next) =>
   } catch (error) {
     res.status(error.statusCode || 500).json({
       success: false,
-      message: error.message || 'Unable to load Upwork marketplace assignments.',
+      message: error.message || 'Unable to load Adzuna marketplace assignments.',
     });
   }
 });
