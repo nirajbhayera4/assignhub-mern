@@ -15,7 +15,7 @@ const RoleSelection = () => {
         <p className="role-subtitle">Join AssignHub and start making money or finding help</p>
 
         <div className="role-cards-wrapper">
-          <Link to="/worker-dashboard" className="role-card worker-card">
+          <Link to="/register?role=worker" className="role-card worker-card">
             <div className="role-icon">💼</div>
             <h2>Work & Earn Money</h2>
             <p>Complete assignments from students and earn competitive rates</p>
@@ -25,10 +25,10 @@ const RoleSelection = () => {
               <li>✓ Build your portfolio</li>
               <li>✓ Instant payments</li>
             </ul>
-            <button className="role-btn">Get Started as Worker</button>
+            <button className="role-btn">Create Worker Account</button>
           </Link>
 
-          <Link to="/provider-dashboard" className="role-card provider-card">
+          <Link to="/register?role=provider" className="role-card provider-card">
             <div className="role-icon">📝</div>
             <h2>Post Assignments</h2>
             <p>Post your assignments and get them completed by verified experts</p>
@@ -38,13 +38,13 @@ const RoleSelection = () => {
               <li>✓ Quality guaranteed</li>
               <li>✓ Easy payment process</li>
             </ul>
-            <button className="role-btn">Post Assignment</button>
+            <button className="role-btn">Create Provider Account</button>
           </Link>
         </div>
 
         <div className="role-marketplace-link">
           <p>or</p>
-          <Link to="/marketplace" className="marketplace-btn">Browse Marketplace</Link>
+          <Link to="/login" className="marketplace-btn">Login to Browse Marketplace</Link>
         </div>
       </div>
     </div>

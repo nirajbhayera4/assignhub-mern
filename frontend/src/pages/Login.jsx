@@ -22,6 +22,17 @@ const validateLoginForm = ({ email, password }) => {
   return nextErrors;
 };
 
+const getLoginErrorMessage = (error) => {
+  const status = error.response?.status;
+  const message = error.response?.data?.message;
+
+  if (status === 401 && message === 'Invalid credentials') {
+    return 'No account matched that email and password. Create an account first, then sign in.';
+  }
+
+  return message || 'Login failed. Check your credentials and try again.';
+};
+
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -81,9 +92,7 @@ const Login = () => {
       });
       navigate(redirectTo, { replace: true });
     } catch (err) {
-      setError(
-        err.response?.data?.message || 'Login failed. Check your credentials and try again.'
-      );
+      setError(getLoginErrorMessage(err));
     } finally {
       setLoading(false);
     }
@@ -160,7 +169,14 @@ const Login = () => {
               ) : null}
             </label>
 
-            {error ? <p className="login-error">{error}</p> : null}
+            {error ? (
+              <div className="login-error-block">
+                <p className="login-error">{error}</p>
+                <Link to="/register" className="login-inline-link">
+                  Create an account
+                </Link>
+              </div>
+            ) : null}
 
             <button type="submit" className="login-submit" disabled={loading}>
               {loading ? 'Signing in...' : 'Login'}

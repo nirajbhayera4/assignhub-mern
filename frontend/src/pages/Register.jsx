@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { register } from '../services/auth';
 import '../styles/Login.css';
 
@@ -37,12 +37,15 @@ const validateRegisterForm = ({ name, email, password, confirmPassword, role }) 
 
 const Register = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const selectedRole = searchParams.get('role');
+  const initialRole = selectedRole === 'provider' ? 'provider' : 'worker';
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
     confirmPassword: '',
-    role: 'worker',
+    role: initialRole,
   });
   const [fieldErrors, setFieldErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -101,7 +104,8 @@ const Register = () => {
           <p className="login-kicker">Create Account</p>
           <h1>Create your AssignHub account and start working.</h1>
           <p className="login-description">
-            Register as a worker to complete assignments or as a provider to post them.
+            Sign up with your own email address and password, then use AssignHub as a
+            worker or provider.
           </p>
           <Link to="/login" className="login-back-link">
             Already have an account? Login
