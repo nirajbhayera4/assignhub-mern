@@ -14,6 +14,7 @@ import RoleSelection from './pages/RoleSelection';
 import WorkerDashboard from './pages/WorkerDashboard';
 import ProviderDashboard from './pages/ProviderDashboard';
 import Marketplace from './pages/Marketplace';
+import Profile from './pages/Profile';
 import Wallet from './pages/Wallet';
 import Navigation from './components/Navigation';
 import { isAuthenticated } from './services/auth';
@@ -84,6 +85,14 @@ function AppContent() {
           element={
             <ProtectedRoute>
               <Wallet />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
             </ProtectedRoute>
           }
         />

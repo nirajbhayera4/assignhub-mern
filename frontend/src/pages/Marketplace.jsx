@@ -57,26 +57,6 @@ const Marketplace = () => {
   const [savedAssignments, setSavedAssignments] = useState([]);
   const [visibleCount, setVisibleCount] = useState(6);
 
-  useEffect(() => {
-    const storedAssignments = localStorage.getItem(SAVED_ASSIGNMENTS_KEY);
-
-    if (storedAssignments) {
-      try {
-        setSavedAssignments(JSON.parse(storedAssignments));
-      } catch (parseError) {
-        console.error('Failed to parse saved assignments:', parseError);
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchAssignments();
-  }, [fetchAssignments]);
-
-  useEffect(() => {
-    setVisibleCount(6);
-  }, [searchTerm, budgetRange, difficultyFilter, sourceFilter, filterCategory, sortBy]);
-
   const fetchAssignments = useCallback(async () => {
     try {
       setLoading(true);
@@ -160,6 +140,26 @@ const Marketplace = () => {
       setLoading(false);
     }
   }, [filterCategory, sortBy, sourceFilter]);
+
+  useEffect(() => {
+    const storedAssignments = localStorage.getItem(SAVED_ASSIGNMENTS_KEY);
+
+    if (storedAssignments) {
+      try {
+        setSavedAssignments(JSON.parse(storedAssignments));
+      } catch (parseError) {
+        console.error('Failed to parse saved assignments:', parseError);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchAssignments();
+  }, [fetchAssignments]);
+
+  useEffect(() => {
+    setVisibleCount(6);
+  }, [searchTerm, budgetRange, difficultyFilter, sourceFilter, filterCategory, sortBy]);
 
   const toggleSavedAssignment = (assignmentId) => {
     const nextSavedAssignments = savedAssignments.includes(assignmentId)

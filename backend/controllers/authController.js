@@ -156,8 +156,28 @@ exports.updateDetails = async (req, res, next) => {
       name: req.body.name,
       email: req.body.email,
       bio: req.body.bio,
-      skills: req.body.skills
+      skills: req.body.skills,
+      avatar: req.body.avatar
     };
+
+    if (fieldsToUpdate.email) {
+      fieldsToUpdate.email = fieldsToUpdate.email.trim().toLowerCase();
+    }
+
+    if (fieldsToUpdate.name) {
+      fieldsToUpdate.name = fieldsToUpdate.name.trim();
+    }
+
+    if (fieldsToUpdate.bio) {
+      fieldsToUpdate.bio = fieldsToUpdate.bio.trim();
+    }
+
+    if (fieldsToUpdate.avatar && !fieldsToUpdate.avatar.startsWith('data:image/')) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please upload a valid profile image'
+      });
+    }
 
     const user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
       new: true,
@@ -333,6 +353,9 @@ const sendTokenResponse = (user, statusCode, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
+        avatar: user.avatar,
+        bio: user.bio,
+        skills: user.skills,
         wallet: user.wallet,
         rating: user.rating
       }

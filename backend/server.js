@@ -15,7 +15,7 @@ connectDB();
 const app = express();
 
 // Body parser
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 
 // CORS
 app.use(cors());

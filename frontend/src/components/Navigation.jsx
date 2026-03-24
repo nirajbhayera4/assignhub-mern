@@ -82,9 +82,14 @@ const Navigation = ({ userRole, setUserRole }) => {
                 )}
               </div>
 
-              <button className="nav-profile-btn" onClick={logout}>
-                {storedUser?.name?.charAt(0)?.toUpperCase() || '👤'}
-              </button>
+              <div className="nav-profile-stack">
+                <Link to="/profile" className="nav-profile-btn">
+                  {storedUser?.name?.charAt(0)?.toUpperCase() || '👤'}
+                </Link>
+                <button className="nav-logout-btn" onClick={logout} type="button">
+                  Logout
+                </button>
+              </div>
             </>
           ) : (
             <Link to="/login" className="cta-btn">

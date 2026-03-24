@@ -224,11 +224,36 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    text-decoration: none;
+    color: #0f0f0f;
 }
 
 .nav-profile-btn:hover {
     transform: scale(1.1);
     box-shadow: 0 8px 20px rgba(0, 255, 136, 0.3);
+}
+
+.nav-profile-stack {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.nav-logout-btn {
+    border: 1px solid rgba(15, 15, 15, 0.12);
+    background: white;
+    color: #0f0f0f;
+    border-radius: 999px;
+    padding: 0.7rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.nav-logout-btn:hover {
+    background: #0f0f0f;
+    color: white;
 }
 
 /* Old Navigation Styles (for fallback) */
