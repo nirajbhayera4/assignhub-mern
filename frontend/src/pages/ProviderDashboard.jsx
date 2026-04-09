@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { getProviderAssignments, createAssignment } from '../services/assignments';
+import { useNavigate } from 'react-router-dom';
+import { getProviderAssignments } from '../services/assignments';
 import { getStoredUser } from '../services/auth';
 import '../styles/ProviderDashboard.css';
 
 const ProviderDashboard = () => {
+  const navigate = useNavigate();
   const [postedAssignments, setPostedAssignments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showPostForm, setShowPostForm] = useState(false);
 
   useEffect(() => {
     fetchProviderAssignments();
@@ -32,6 +33,18 @@ const ProviderDashboard = () => {
     }
   };
 
+  const totalPosted = postedAssignments.length;
+  const activeAssignments = postedAssignments.filter(
+    (assignment) => assignment.status === 'Open' || assignment.status === 'In Progress'
+  ).length;
+  const completedAssignments = postedAssignments.filter(
+    (assignment) => assignment.status === 'Completed'
+  ).length;
+  const totalSpent = postedAssignments.reduce(
+    (sum, assignment) => sum + (Number(assignment.budget) || 0),
+    0
+  );
+
   return (
     <div className="provider-dashboard">
       <div className="provider-background">
@@ -46,7 +59,13 @@ const ProviderDashboard = () => {
             <h1>Manage Your Assignments</h1>
             <p>Post, monitor, and manage assignments from verified experts</p>
           </div>
-          <button className="post-assignment-btn">+ Post New Assignment</button>
+          <button
+            className="post-assignment-btn"
+            onClick={() => navigate('/post-assignment')}
+            type="button"
+          >
+            + Post New Assignment
+          </button>
         </div>
 
         {/* Action Cards */}
@@ -54,25 +73,25 @@ const ProviderDashboard = () => {
           <div className="action-card">
             <div className="action-icon">📋</div>
             <h3>Total Posted</h3>
-            <p className="action-number">24</p>
+            <p className="action-number">{totalPosted}</p>
             <span className="action-meta">All time</span>
           </div>
           <div className="action-card">
             <div className="action-icon">⏳</div>
             <h3>In Progress</h3>
-            <p className="action-number">3</p>
+            <p className="action-number">{activeAssignments}</p>
             <span className="action-meta">Being worked on</span>
           </div>
           <div className="action-card">
             <div className="action-icon">✅</div>
             <h3>Completed</h3>
-            <p className="action-number">18</p>
+            <p className="action-number">{completedAssignments}</p>
             <span className="action-meta">Delivered</span>
           </div>
           <div className="action-card">
             <div className="action-icon">💰</div>
             <h3>Total Spent</h3>
-            <p className="action-number">$3,250</p>
+            <p className="action-number">${totalSpent}</p>
             <span className="action-meta">On assignments</span>
           </div>
         </div>
@@ -95,7 +114,13 @@ const ProviderDashboard = () => {
             ) : postedAssignments.length === 0 ? (
               <div className="empty-state">
                 <p>You haven't posted any assignments yet.</p>
-                <button onClick={() => setShowPostForm(true)} className="post-assignment-btn">Post Your First Assignment</button>
+                <button
+                  onClick={() => navigate('/post-assignment')}
+                  className="post-assignment-btn"
+                  type="button"
+                >
+                  Post Your First Assignment
+                </button>
               </div>
             ) : (
               postedAssignments.map((assignment) => (

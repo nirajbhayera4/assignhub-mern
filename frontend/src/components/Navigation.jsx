@@ -26,6 +26,9 @@ const Navigation = ({ userRole, setUserRole }) => {
           <Link to="/provider-dashboard" className="nav-item">
             📝 Post Assignment
           </Link>
+          <Link to="/post-assignment" className="nav-item">
+            ➕ New Post
+          </Link>
         </div>
 
         <div className="nav-right">

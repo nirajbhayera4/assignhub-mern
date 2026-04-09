@@ -17,6 +17,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import Register from './pages/Register';
 import RoleSelection from './pages/RoleSelection';
 import TermsOfService from './pages/TermsOfService';
+import PostAssignment from './pages/PostAssignment';
 import WorkerDashboard from './pages/WorkerDashboard';
 import ProviderDashboard from './pages/ProviderDashboard';
 import Marketplace from './pages/Marketplace';
@@ -83,6 +84,14 @@ function AppContent() {
           element={
             <ProtectedRoute>
               <ProviderDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/post-assignment"
+          element={
+            <ProtectedRoute>
+              <PostAssignment />
             </ProtectedRoute>
           }
         />
