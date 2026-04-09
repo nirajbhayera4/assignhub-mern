@@ -56,7 +56,8 @@ assignhub-mern/
 
 ## Environment Setup
 
-Create or update [`backend/.env`](/workspaces/assignhub-mern/backend/.env):
+Create or update [`backend/.env`](/workspaces/assignhub-mern/backend/.env)
+from [`backend/.env.example`](/workspaces/assignhub-mern/backend/.env.example):
 
 ```env
 NODE_ENV=development
@@ -79,7 +80,8 @@ ADZUNA_APP_KEY=
 ADZUNA_COUNTRY=in
 ```
 
-Frontend env in [`frontend/.env`](/workspaces/assignhub-mern/frontend/.env):
+Frontend env in [`frontend/.env`](/workspaces/assignhub-mern/frontend/.env)
+from [`frontend/.env.example`](/workspaces/assignhub-mern/frontend/.env.example):
 
 ```env
 REACT_APP_API_URL=/api
@@ -91,6 +93,41 @@ Notes:
 - If you use MongoDB Atlas, make sure your IP is allowed in Atlas Network Access.
 - If your MongoDB password contains special characters, URL-encode it in `MONGO_URI`.
 - `ADZUNA_APP_ID` and `ADZUNA_APP_KEY` are optional. Without them, the marketplace falls back to local assignments only.
+
+## Separate Deployment
+
+This repo works best when the frontend and backend are deployed separately:
+
+- Deploy `backend/` as a Node web service on Railway or Render
+- Deploy `frontend/` as a static site on Netlify or Render
+- Keep MongoDB on Atlas
+
+Suggested production environment values:
+
+Backend:
+
+```env
+NODE_ENV=production
+PORT=10000
+MONGO_URI=mongodb+srv://<username>:<password>@<cluster>/<database>?retryWrites=true&w=majority
+JWT_SECRET=replace_this_with_a_real_secret
+CLIENT_URL=https://your-frontend-domain.com
+```
+
+Frontend:
+
+```env
+REACT_APP_API_URL=https://your-backend-domain.com/api
+REACT_APP_SOCKET_URL=https://your-backend-domain.com
+```
+
+Deployment notes:
+
+- On Render, set the backend root directory to `backend`
+- On Railway, deploy the backend service from `backend`
+- On Netlify or Render Static Site, deploy the frontend from `frontend`
+- Make sure Atlas Network Access allows your hosted backend to connect
+- After changing frontend env vars, trigger a new frontend deploy so CRA picks them up at build time
 
 ## Install Dependencies
 
