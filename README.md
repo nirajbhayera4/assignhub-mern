@@ -1,13 +1,13 @@
 # AssignHub MERN
 
-AssignHub is a MERN-based assignment marketplace. It includes a React frontend, an Express/MongoDB backend, authentication flows, wallet/profile endpoints, and a marketplace view that can combine your local assignments with an external Upwork feed when configured.
+AssignHub is a MERN-based assignment marketplace for an Indian audience. It includes a React frontend, an Express/MongoDB backend, authentication flows, wallet/profile endpoints, a richer assignment posting flow, and a marketplace view that can combine your local assignments with an external Adzuna feed when configured.
 
 ## Stack
 
 - Frontend: React, React Router, Axios, CRA dev server
 - Backend: Express, Mongoose, JWT auth
 - Database: MongoDB Atlas or local MongoDB
-- Optional external marketplace feed: Upwork GraphQL API
+- Optional external marketplace feed: Adzuna Jobs API
 
 ## Project Structure
 
@@ -38,9 +38,15 @@ assignhub-mern/
 - Forgot-password flow with OTP reset
 - Protected frontend routes for authenticated users
 - Assignment marketplace backed by MongoDB
+- Dedicated post-assignment page with:
+  title, description, subject, category, assignment type, deadline, budget, difficulty, pricing model, estimated time, skills, and attachments
+- Provider dashboard with assignment stats and direct post flow
 - Worker and provider dashboard screens
-- Wallet and transaction endpoints
-- Optional Upwork marketplace import feed
+- Profile editing with avatar, bio, skills, and college ID
+- Wallet and transaction endpoints with INR display in the frontend
+- Assignment status tracking: `Open`, `In Progress`, `Completed`, `Cancelled`
+- Bidding-ready application model with proposed budget, estimated time, and proposal message
+- Optional Adzuna marketplace import feed
 
 ## Prerequisites
 
@@ -68,8 +74,9 @@ CLOUDINARY_API_SECRET=your_secret
 STRIPE_SECRET_KEY=your_stripe_secret
 STRIPE_PUBLISHABLE_KEY=your_stripe_public
 CLIENT_URL=http://localhost:3000
-UPWORK_ACCESS_TOKEN=
-UPWORK_ORG_ID=
+ADZUNA_APP_ID=
+ADZUNA_APP_KEY=
+ADZUNA_COUNTRY=in
 ```
 
 Frontend env in [`frontend/.env`](/workspaces/assignhub-mern/frontend/.env):
@@ -83,7 +90,7 @@ Notes:
 
 - If you use MongoDB Atlas, make sure your IP is allowed in Atlas Network Access.
 - If your MongoDB password contains special characters, URL-encode it in `MONGO_URI`.
-- `UPWORK_ACCESS_TOKEN` is optional. Without it, the marketplace falls back to local assignments only.
+- `ADZUNA_APP_ID` and `ADZUNA_APP_KEY` are optional. Without them, the marketplace falls back to local assignments only.
 
 ## Install Dependencies
 
@@ -121,6 +128,32 @@ Default URLs:
 
 - Frontend: `http://localhost:3000`
 - Backend: `http://localhost:5000`
+
+## Current Posting Flow
+
+After login, users can open `/post-assignment` and create richer marketplace posts. The current form supports:
+
+- Title
+- Description
+- Subject
+- Category: `Coding`, `Design`, `Writing`, `Presentation`, `Research`, `Other`
+- Assignment type: `Homework`, `Project`, `Thesis`, `Exam Prep`, `Presentation`, `Other`
+- Deadline
+- Budget / reward
+- Pricing type: `Fixed Price` or `Bidding`
+- Estimated completion time
+- Skills required
+- Maximum workers
+- Attachments: PDF, docs, and images
+- Poster snapshot details from the logged-in profile: name, college ID, verification status, rating
+
+To get the best result, update your profile first:
+
+```bash
+# start frontend and backend, then log in
+# open the profile page and add your college ID / skills
+http://localhost:3000/profile
+```
 
 ## Seed Sample Data
 
@@ -166,7 +199,7 @@ Assignments:
 - `GET /api/assignments/:id`
 - `POST /api/assignments`
 - `POST /api/assignments/:id/apply`
-- `GET /api/assignments/external/upwork`
+- `GET /api/assignments/external/adzuna`
 
 Users:
 
@@ -174,32 +207,37 @@ Users:
 - `GET /api/users/:id/transactions`
 - `POST /api/users/:id/withdraw`
 
-## Upwork Marketplace Integration
+## Adzuna Marketplace Integration
 
-The app can pull real marketplace jobs from Upwork through:
+The app can pull real marketplace jobs from Adzuna through:
 
-- `GET /api/assignments/external/upwork`
+- `GET /api/assignments/external/adzuna`
 
 To enable it:
 
-1. Request an Upwork API key/app
-2. Complete the OAuth flow to obtain an access token
-3. Set `UPWORK_ACCESS_TOKEN` in [`backend/.env`](/workspaces/assignhub-mern/backend/.env)
-4. Restart the backend
+1. Create an Adzuna developer app
+2. Set `ADZUNA_APP_ID` in [`backend/.env`](/workspaces/assignhub-mern/backend/.env)
+3. Set `ADZUNA_APP_KEY` in [`backend/.env`](/workspaces/assignhub-mern/backend/.env)
+4. Optionally set `ADZUNA_COUNTRY=in` for India-focused search results
+5. Restart the backend
 
-Without this token, the frontend shows local assignments only and displays a notice that the Upwork feed is unavailable.
+Without these values, the frontend shows local assignments only and displays a notice that the Adzuna feed is unavailable.
 
-Official references:
-
-- Upwork developer docs: https://www.upwork.com/developer/documentation/graphql/api/docs/index.html
-- Upwork API key request: https://support.upwork.com/hc/en-us/articles/17995842326931--Request-an-API-key
+The codebase currently expects Adzuna configuration, not Upwork.
 
 ## Authentication Notes
 
 - Protected routes redirect unauthenticated users to the login page
 - Account creation stores JWT and user data in local storage
+- Profile updates can save avatar, bio, skills, and college ID
 - Forgot-password sends an OTP email when email config is valid
 - In development, if email is not configured, the OTP is returned in the API response
+
+## Currency Notes
+
+- The frontend now presents assignment budgets, balances, and payment amounts in Indian Rupees (`INR` / `₹`)
+- The backend stores numeric amounts as regular numbers; the frontend handles INR formatting
+- If you seed old sample data, values are treated as rupee amounts in the current UI
 
 ## Common Issues
 
@@ -215,20 +253,22 @@ Frontend can’t reach backend:
 - Make sure backend is running on port `5000`
 - Frontend uses CRA proxy to `/api`
 
-Upwork feed unavailable:
+Adzuna feed unavailable:
 
-- `UPWORK_ACCESS_TOKEN` is missing or invalid
-- Upwork app/OAuth flow is not configured yet
+- `ADZUNA_APP_ID` or `ADZUNA_APP_KEY` is missing or invalid
+- External feed config is not set yet
 
 ## Current Limitations
 
-- Several backend modules like bids, messages, payments, and reviews are still placeholders
-- Some UI pages are still scaffolds or partial implementations
-- The Upwork integration currently expects a manually supplied access token
+- Several backend modules like bids, messages, payments, and reviews are still placeholders or only partially wired
+- Assignment posting is much richer now, but assignment detail, editing, bidding UI, reviews, and escrow still need full end-to-end flows
+- Attachments are currently stored on the assignment as data URLs; this is fine for development but should move to object storage or Cloudinary for production
+- The Adzuna integration is optional and depends on external API configuration
 
 ## Next Recommended Steps
 
-1. Add persistent token storage and OAuth callback flow for Upwork
-2. Finish real assignment detail/apply screens
-3. Complete wallet withdrawal UI flow
-4. Replace placeholder API modules with real implementations
+1. Add assignment detail and edit screens
+2. Build the actual bidding/apply UI using the proposal fields already added to the application model
+3. Replace placeholder bids, reviews, messages, and payments modules with real implementations
+4. Move file attachments to production-safe cloud storage
+5. Add notifications, proof-of-work submission, and smart matching
