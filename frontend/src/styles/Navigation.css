@@ -95,6 +95,8 @@
     text-decoration: none;
     transition: all 0.3s ease;
     cursor: pointer;
+    min-width: 0;
+    max-width: 220px;
 }
 
 .wallet-icon {
@@ -106,6 +108,10 @@
     background: linear-gradient(135deg, #00ff88, #ff3366);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    min-width: 0;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 .wallet-indicator:hover {
