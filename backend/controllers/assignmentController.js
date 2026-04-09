@@ -118,10 +118,42 @@ exports.getAssignment = asyncHandler(async (req, res, next) => {
 // @route   POST /api/assignments
 // @access  Private (Provider only)
 exports.createAssignment = asyncHandler(async (req, res, next) => {
-  // Add user to req.body
-  req.body.provider = req.user.id;
+  const skillsRequired = Array.isArray(req.body.skillsRequired)
+    ? req.body.skillsRequired
+    : typeof req.body.skillsRequired === 'string'
+      ? req.body.skillsRequired.split(',').map((skill) => skill.trim()).filter(Boolean)
+      : [];
 
-  const assignment = await Assignment.create(req.body);
+  const attachments = Array.isArray(req.body.attachments)
+    ? req.body.attachments
+        .filter((file) => file?.name && file?.mimeType && file?.dataUrl)
+        .slice(0, 5)
+    : [];
+
+  const assignmentPayload = {
+    title: req.body.title?.trim(),
+    description: req.body.description?.trim(),
+    subject: req.body.subject?.trim(),
+    category: req.body.category || 'Other',
+    assignmentType: req.body.assignmentType || 'Project',
+    difficulty: req.body.difficulty || 'Medium',
+    pricingType: req.body.pricingType || 'Fixed Price',
+    budget: req.body.budget,
+    deadline: req.body.deadline,
+    maxWorkers: req.body.maxWorkers || 1,
+    estimatedTime: req.body.estimatedTime?.trim(),
+    skillsRequired,
+    attachments,
+    provider: req.user.id,
+    posterSnapshot: {
+      name: req.user.name,
+      collegeId: req.user.collegeId || '',
+      isVerified: Boolean(req.user.isVerified),
+      rating: Number(req.user.rating) || 0,
+    }
+  };
+
+  const assignment = await Assignment.create(assignmentPayload);
 
   // Update provider stats
   await User.findByIdAndUpdate(req.user.id, {
@@ -238,7 +270,10 @@ exports.applyToAssignment = asyncHandler(async (req, res, next) => {
   const application = await Application.create({
     assignment: req.params.id,
     worker: req.user.id,
-    message: req.body.message
+    message: req.body.message,
+    proposedBudget: req.body.proposedBudget,
+    estimatedTime: req.body.estimatedTime,
+    proposalMessage: req.body.proposalMessage
   });
 
   // Add application to assignment

@@ -15,6 +15,18 @@ const applicationSchema = new mongoose.Schema({
     type: String,
     maxlength: [500, 'Message cannot be more than 500 characters']
   },
+  proposedBudget: {
+    type: Number,
+    min: [1, 'Proposal budget must be at least 1']
+  },
+  estimatedTime: {
+    type: String,
+    maxlength: [120, 'Estimated time cannot be more than 120 characters']
+  },
+  proposalMessage: {
+    type: String,
+    maxlength: [1000, 'Proposal message cannot be more than 1000 characters']
+  },
   status: {
     type: String,
     enum: ['Pending', 'Accepted', 'Rejected'],

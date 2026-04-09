@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getStoredUser, isAuthenticated, logout } from '../services/auth';
+import { formatCurrencyINR } from '../utils/helpers';
 import '../styles/Navigation.css';
 
 const Navigation = ({ userRole, setUserRole }) => {
@@ -36,7 +37,7 @@ const Navigation = ({ userRole, setUserRole }) => {
             <>
               <Link to="/wallet" className="wallet-indicator">
                 <span className="wallet-icon">💰</span>
-                <span className="wallet-amount">${walletBalance.toFixed(2)}</span>
+                <span className="wallet-amount">{formatCurrencyINR(walletBalance)}</span>
               </Link>
 
               <div className="role-switcher">

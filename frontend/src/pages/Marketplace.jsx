@@ -3,24 +3,25 @@ import {
   getAssignments,
   getAdzunaMarketplaceAssignments,
 } from '../services/assignments';
+import { formatCurrencyINR } from '../utils/helpers';
 import '../styles/Marketplace.css';
 
 const SAVED_ASSIGNMENTS_KEY = 'assignhub_saved_assignments';
 
 const getBudgetLabel = (budget) => {
   if (budget >= 500) {
-    return '$500+';
+    return '₹500+';
   }
 
   if (budget >= 300) {
-    return '$300 - $499';
+    return '₹300 - ₹499';
   }
 
   if (budget >= 100) {
-    return '$100 - $299';
+    return '₹100 - ₹299';
   }
 
-  return '$0 - $99';
+  return '₹0 - ₹99';
 };
 
 const matchesBudgetRange = (budget, budgetRange) => {
@@ -239,7 +240,7 @@ const Marketplace = () => {
             </div>
             <div className="summary-card">
               <span>Average budget</span>
-              <strong>${averageBudget}</strong>
+              <strong>{formatCurrencyINR(averageBudget)}</strong>
               <p>Healthy mix of starter gigs and premium jobs</p>
             </div>
             <div className="summary-card">
@@ -319,10 +320,10 @@ const Marketplace = () => {
               onChange={(event) => setBudgetRange(event.target.value)}
             >
               <option value="all">All Budgets</option>
-              <option value="0-100">$0 - $99</option>
-              <option value="100-300">$100 - $299</option>
-              <option value="300-500">$300 - $499</option>
-              <option value="500+">$500+</option>
+              <option value="0-100">₹0 - ₹99</option>
+              <option value="100-300">₹100 - ₹299</option>
+              <option value="300-500">₹300 - ₹499</option>
+              <option value="500+">₹500+</option>
             </select>
           </div>
 
@@ -435,7 +436,7 @@ const Marketplace = () => {
                   <div className="card-details">
                     <div className="detail-box">
                       <p className="detail-label">Budget</p>
-                      <p className="detail-value">${budget}</p>
+                      <p className="detail-value">{formatCurrencyINR(budget)}</p>
                     </div>
                     <div className="detail-box">
                       <p className="detail-label">Timeline</p>

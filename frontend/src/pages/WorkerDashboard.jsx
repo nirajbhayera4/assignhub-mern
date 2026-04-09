@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getAssignments } from '../services/assignments';
 import { getStoredUser } from '../services/auth';
 import { getWallet } from '../services/users';
+import { formatCurrencyINR } from '../utils/helpers';
 import '../styles/WorkerDashboard.css';
 
 const WorkerDashboard = () => {
@@ -69,7 +70,7 @@ const WorkerDashboard = () => {
           <div className="header-balance">
             <div className="balance-card">
               <p>Current Balance</p>
-              <h2>${wallet.balance?.toFixed(2) || '0.00'}</h2>
+              <h2>{formatCurrencyINR(wallet.balance)}</h2>
               <button className="withdraw-btn">Withdraw Funds</button>
             </div>
           </div>
@@ -81,21 +82,21 @@ const WorkerDashboard = () => {
             <div className="stat-icon">📊</div>
             <div className="stat-info">
               <p>Total Earned</p>
-              <h3>${wallet.earned?.toFixed(2) || '0.00'}</h3>
+              <h3>{formatCurrencyINR(wallet.earned)}</h3>
             </div>
           </div>
           <div className="stat-card">
             <div className="stat-icon">⏳</div>
             <div className="stat-info">
               <p>Pending</p>
-              <h3>${wallet.pending?.toFixed(2) || '0.00'}</h3>
+              <h3>{formatCurrencyINR(wallet.pending)}</h3>
             </div>
           </div>
           <div className="stat-card">
             <div className="stat-icon">💰</div>
             <div className="stat-info">
               <p>Withdrawn</p>
-              <h3>${wallet.withdrawn?.toFixed(2) || '0.00'}</h3>
+              <h3>{formatCurrencyINR(wallet.withdrawn)}</h3>
             </div>
           </div>
           <div className="stat-card">
@@ -170,7 +171,7 @@ const WorkerDashboard = () => {
                 <div className="assignment-meta">
                   <div className="meta-item">
                     <span className="meta-icon">💰</span>
-                    <span>${assignment.budget}</span>
+                    <span>{formatCurrencyINR(assignment.budget)}</span>
                   </div>
                   <div className="meta-item">
                     <span className="meta-icon">⏱</span>

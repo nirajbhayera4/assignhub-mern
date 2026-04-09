@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getProviderAssignments } from '../services/assignments';
 import { getStoredUser } from '../services/auth';
+import { formatCurrencyINR } from '../utils/helpers';
 import '../styles/ProviderDashboard.css';
 
 const ProviderDashboard = () => {
@@ -91,7 +92,7 @@ const ProviderDashboard = () => {
           <div className="action-card">
             <div className="action-icon">💰</div>
             <h3>Total Spent</h3>
-            <p className="action-number">${totalSpent}</p>
+            <p className="action-number">{formatCurrencyINR(totalSpent)}</p>
             <span className="action-meta">On assignments</span>
           </div>
         </div>
@@ -134,7 +135,7 @@ const ProviderDashboard = () => {
                     </div>
                     <div className="item-budget">
                       <span className="budget-label">Budget</span>
-                      <p className="budget-amount">${assignment.budget}</p>
+                      <p className="budget-amount">{formatCurrencyINR(assignment.budget)}</p>
                     </div>
                   </div>
 

@@ -24,7 +24,7 @@ exports.register = async (req, res, next) => {
       return;
     }
 
-    const { name, email, password, role } = req.body;
+    const { name, email, password, role, collegeId } = req.body;
     const normalizedEmail = email?.trim().toLowerCase();
 
     if (!name?.trim() || !normalizedEmail || !password || !role) {
@@ -48,7 +48,8 @@ exports.register = async (req, res, next) => {
       name: name.trim(),
       email: normalizedEmail,
       password,
-      role
+      role,
+      collegeId: collegeId?.trim()
     });
 
     sendTokenResponse(user, 200, res);
@@ -156,6 +157,7 @@ exports.updateDetails = async (req, res, next) => {
       name: req.body.name,
       email: req.body.email,
       bio: req.body.bio,
+      collegeId: req.body.collegeId,
       skills: req.body.skills,
       avatar: req.body.avatar
     };
@@ -170,6 +172,10 @@ exports.updateDetails = async (req, res, next) => {
 
     if (fieldsToUpdate.bio) {
       fieldsToUpdate.bio = fieldsToUpdate.bio.trim();
+    }
+
+    if (fieldsToUpdate.collegeId) {
+      fieldsToUpdate.collegeId = fieldsToUpdate.collegeId.trim();
     }
 
     if (fieldsToUpdate.avatar && !fieldsToUpdate.avatar.startsWith('data:image/')) {

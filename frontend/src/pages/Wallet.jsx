@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getStoredUser } from '../services/auth';
 import { getWallet, getTransactions, processWithdrawal } from '../services/users';
+import { formatCurrencyINR } from '../utils/helpers';
 import '../styles/Wallet.css';
 
 const Wallet = () => {
@@ -103,8 +104,8 @@ const Wallet = () => {
   };
 
   const formattedWithdrawAmount = withdrawAmount && Number(withdrawAmount) > 0
-    ? Number(withdrawAmount).toFixed(2)
-    : '0.00';
+    ? formatCurrencyINR(Number(withdrawAmount))
+    : formatCurrencyINR(0);
 
   return (
     <div className="wallet-page">
@@ -126,7 +127,7 @@ const Wallet = () => {
             <div className="card-icon">💰</div>
             <div className="card-content">
               <p>Available Balance</p>
-              <h2>${wallet.balance?.toFixed(2) || '0.00'}</h2>
+              <h2>{formatCurrencyINR(wallet.balance)}</h2>
               <button
                 className="withdraw-btn-card"
                 onClick={() => setActiveTab('withdraw')}
@@ -141,7 +142,7 @@ const Wallet = () => {
             <div className="card-icon">⏳</div>
             <div className="card-content">
               <p>Pending Earnings</p>
-              <h2>${wallet.pending?.toFixed(2) || '0.00'}</h2>
+              <h2>{formatCurrencyINR(wallet.pending)}</h2>
               <span className="card-info">From active projects</span>
             </div>
           </div>
@@ -150,7 +151,7 @@ const Wallet = () => {
             <div className="card-icon">📊</div>
             <div className="card-content">
               <p>Total Earned</p>
-              <h2>${wallet.earned?.toFixed(2) || '0.00'}</h2>
+              <h2>{formatCurrencyINR(wallet.earned)}</h2>
               <span className="card-info">All time earnings</span>
             </div>
           </div>
@@ -159,7 +160,7 @@ const Wallet = () => {
             <div className="card-icon">🏦</div>
             <div className="card-content">
               <p>Total Withdrawn</p>
-              <h2>${wallet.withdrawn?.toFixed(2) || '0.00'}</h2>
+              <h2>{formatCurrencyINR(wallet.withdrawn)}</h2>
               <span className="card-info">To your linked UPI ID</span>
             </div>
           </div>
@@ -213,7 +214,7 @@ const Wallet = () => {
                 </div>
                 <div className="schedule-item">
                   <span className="schedule-label">Minimum Withdrawal</span>
-                  <p>$10.00 (or currency equivalent)</p>
+                  <p>{formatCurrencyINR(10)} minimum</p>
                 </div>
               </div>
             </div>
@@ -260,7 +261,7 @@ const Wallet = () => {
                       {transaction.type === 'earned' ? '+' :
                        transaction.type === 'withdrawn' ? '-' :
                        transaction.type === 'refunded' ? '+' : ''}
-                      ${transaction.amount?.toFixed(2) || '0.00'}
+                      {formatCurrencyINR(transaction.amount)}
                     </div>
                   </div>
                 ))
@@ -277,7 +278,7 @@ const Wallet = () => {
               <div className="form-section">
                 <h3>Step 1: Select Amount</h3>
                 <div className="amount-input-wrapper">
-                  <span className="currency">$</span>
+                  <span className="currency">₹</span>
                   <input
                     type="number"
                     placeholder="Enter amount"
@@ -287,7 +288,7 @@ const Wallet = () => {
                     max={wallet.balance || 0}
                   />
                 </div>
-                <p className="available-info">Available to withdraw: ${wallet.balance?.toFixed(2) || '0.00'}</p>
+                <p className="available-info">Available to withdraw: {formatCurrencyINR(wallet.balance)}</p>
               </div>
 
               <div className="form-section">
@@ -322,7 +323,7 @@ const Wallet = () => {
                 <div className="review-details">
                   <div className="review-item">
                     <span>Amount:</span>
-                    <strong>${formattedWithdrawAmount}</strong>
+                    <strong>{formattedWithdrawAmount}</strong>
                   </div>
                   <div className="review-item">
                     <span>Method:</span>
@@ -334,11 +335,11 @@ const Wallet = () => {
                   </div>
                   <div className="review-item">
                     <span>Processing Fee:</span>
-                    <strong>$0.00</strong>
+                    <strong>{formatCurrencyINR(0)}</strong>
                   </div>
                   <div className="review-item total">
                     <span>Total to Receive:</span>
-                    <strong>${formattedWithdrawAmount}</strong>
+                    <strong>{formattedWithdrawAmount}</strong>
                   </div>
                 </div>
 

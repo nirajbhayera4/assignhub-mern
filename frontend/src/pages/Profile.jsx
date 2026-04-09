@@ -41,6 +41,7 @@ const Profile = () => {
     name: '',
     email: '',
     bio: '',
+    collegeId: '',
     skills: '',
     avatar: '',
   });
@@ -59,6 +60,7 @@ const Profile = () => {
           name: user?.name || '',
           email: user?.email || '',
           bio: user?.bio || '',
+          collegeId: user?.collegeId || '',
           skills: Array.isArray(user?.skills) ? user.skills.join(', ') : '',
           avatar: user?.avatar || '',
         });
@@ -120,6 +122,7 @@ const Profile = () => {
         name: formData.name.trim(),
         email: formData.email.trim(),
         bio: formData.bio.trim(),
+        collegeId: formData.collegeId.trim(),
         skills: formData.skills
           .split(',')
           .map((skill) => skill.trim())
@@ -265,6 +268,17 @@ const Profile = () => {
                   onChange={handleChange}
                   placeholder="Write a short introduction about yourself, your experience, and the kind of work you do."
                   rows="6"
+                />
+              </label>
+
+              <label className="profile-field">
+                <span>College ID</span>
+                <input
+                  type="text"
+                  name="collegeId"
+                  value={formData.collegeId}
+                  onChange={handleChange}
+                  placeholder="Your college roll number or ID"
                 />
               </label>
 

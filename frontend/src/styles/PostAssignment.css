@@ -44,7 +44,7 @@
   max-width: 1180px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.1fr);
+  grid-template-columns: minmax(280px, 0.92fr) minmax(0, 1.08fr);
   gap: 28px;
   align-items: start;
 }
@@ -88,10 +88,15 @@
   font-size: 1.02rem;
 }
 
-.post-suggestions {
+.post-suggestions,
+.poster-meta-list,
+.preview-meta {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+}
+
+.post-suggestions {
   margin-top: 24px;
 }
 
@@ -106,9 +111,76 @@
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.suggestion-pill:hover {
+.suggestion-pill:hover,
+.secondary-action:hover,
+.primary-action:hover {
   transform: translateY(-1px);
+}
+
+.suggestion-pill:hover {
   box-shadow: 0 10px 24px rgba(37, 50, 68, 0.08);
+}
+
+.poster-card,
+.countdown-card {
+  margin-top: 24px;
+  padding: 20px;
+  border-radius: 22px;
+  background: rgba(21, 33, 51, 0.06);
+  border: 1px solid rgba(21, 33, 51, 0.08);
+}
+
+.poster-card-label,
+.preview-label {
+  display: inline-block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.poster-card-label {
+  color: #6d7787;
+}
+
+.poster-card strong,
+.countdown-card strong,
+.post-preview strong {
+  display: block;
+  margin-top: 10px;
+  font-size: 1.18rem;
+}
+
+.poster-meta-list {
+  margin-top: 14px;
+}
+
+.poster-meta-list span {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.8);
+  font-size: 0.88rem;
+  color: #31445e;
+}
+
+.status-lane {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.status-step {
+  padding: 12px;
+  border-radius: 18px;
+  text-align: center;
+  font-weight: 700;
+  color: #516072;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.status-step.active {
+  color: #fff;
+  background: linear-gradient(135deg, #ff6236 0%, #ff2f67 100%);
 }
 
 .post-assignment-form {
@@ -185,14 +257,20 @@
   min-height: 190px;
 }
 
-.form-field small {
-  color: #6b7480;
+.form-field small,
+.attachment-item p,
+.countdown-card p {
+  color: #627081;
 }
 
 .form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px;
+}
+
+.preview-grid {
+  align-items: start;
 }
 
 .post-preview {
@@ -204,17 +282,7 @@
 }
 
 .preview-label {
-  display: inline-block;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
   color: rgba(255, 255, 255, 0.72);
-}
-
-.post-preview strong {
-  display: block;
-  margin-top: 12px;
-  font-size: 1.2rem;
 }
 
 .post-preview p {
@@ -223,9 +291,6 @@
 }
 
 .preview-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
   margin-top: 16px;
 }
 
@@ -234,6 +299,65 @@
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.14);
   font-size: 0.88rem;
+}
+
+.countdown-card {
+  margin-top: 22px;
+  background: linear-gradient(145deg, #fff2e7 0%, #fff8fb 100%);
+}
+
+.countdown-card .preview-label {
+  color: #8d2d14;
+}
+
+.countdown-card p {
+  margin: 10px 0 0;
+  line-height: 1.6;
+}
+
+.attachment-picker {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 0 18px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #1f2a3d 0%, #31445e 100%);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.attachment-list {
+  display: grid;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.attachment-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(38, 50, 70, 0.06);
+}
+
+.attachment-item p {
+  margin: 4px 0 0;
+  font-size: 0.9rem;
+}
+
+.attachment-item button {
+  border: none;
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: rgba(214, 62, 82, 0.12);
+  color: #9a2336;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 .form-actions {
@@ -266,11 +390,6 @@
   box-shadow: 0 18px 32px rgba(255, 67, 88, 0.24);
 }
 
-.secondary-action:hover,
-.primary-action:hover {
-  transform: translateY(-1px);
-}
-
 .primary-action:disabled {
   cursor: wait;
   opacity: 0.75;
@@ -294,7 +413,8 @@
   }
 
   .form-grid,
-  .form-actions {
+  .form-actions,
+  .status-lane {
     grid-template-columns: 1fr;
     display: grid;
   }

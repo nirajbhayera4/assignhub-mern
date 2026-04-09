@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { formatCurrencyINR } from '../utils/helpers';
 import '../styles/Hero.css';
 
 const Hero = () => {
@@ -40,17 +41,17 @@ const Hero = () => {
             <div className="card card-1">
               <h3>Essay on AI Ethics</h3>
               <p>10 pages, APA format</p>
-              <span className="tag">$85.00</span>
+              <span className="tag">{formatCurrencyINR(85)}</span>
             </div>
             <div className="card card-2">
               <h3>Calculus Problem Set</h3>
               <p>15 problems with solutions</p>
-              <span className="tag">$45.00</span>
+              <span className="tag">{formatCurrencyINR(45)}</span>
             </div>
             <div className="card card-3">
               <h3>React.js Project</h3>
               <p>Full-stack web application</p>
-              <span className="tag">$150.00</span>
+              <span className="tag">{formatCurrencyINR(150)}</span>
             </div>
           </div>
         </div>
