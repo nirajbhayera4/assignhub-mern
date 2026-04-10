@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { register } from '../services/auth';
+import { getPostAuthRedirectPath, register } from '../services/auth';
 import '../styles/Login.css';
 
 const validateRegisterForm = ({ name, email, password, confirmPassword, role }) => {
@@ -76,13 +76,13 @@ const Register = () => {
     setError('');
 
     try {
-      await register({
+      const response = await register({
         name: formData.name.trim(),
         email: formData.email.trim(),
         password: formData.password,
         role: formData.role,
       });
-      navigate('/marketplace', { replace: true });
+      navigate(getPostAuthRedirectPath(response.user), { replace: true });
     } catch (err) {
       setError(
         err.response?.data?.message || 'Unable to create your account because the backend server is unavailable.'

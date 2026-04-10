@@ -54,6 +54,25 @@ const normalizeStoredUser = (user) => {
   };
 };
 
+export const isProfileComplete = (user) => {
+  if (!user) {
+    return false;
+  }
+
+  const hasName = Boolean(user.name?.trim());
+  const hasBio = Boolean(user.bio?.trim());
+  const hasCollegeId = Boolean(user.collegeId?.trim());
+  const hasSkills = Array.isArray(user.skills)
+    ? user.skills.some((skill) => Boolean(skill?.trim()))
+    : Boolean(user.skills?.trim());
+
+  return hasName && hasBio && hasCollegeId && hasSkills;
+};
+
+export const getPostAuthRedirectPath = (user) => {
+  return isProfileComplete(user) ? '/marketplace' : '/profile?setup=1';
+};
+
 // Register new user
 export const register = async (userData) => {
   try {

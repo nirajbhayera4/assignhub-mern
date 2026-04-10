@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getStoredUser, isAuthenticated, login } from '../services/auth';
+import {
+  getPostAuthRedirectPath,
+  getStoredUser,
+  isAuthenticated,
+  login,
+} from '../services/auth';
 import '../styles/Login.css';
 
 const validateLoginForm = ({ email, password }) => {
@@ -91,12 +96,12 @@ const Login = () => {
     setError('');
 
     try {
-      await login({
+      const response = await login({
         email: formData.email.trim(),
         password: formData.password,
       });
 
-      navigate('/marketplace', { replace: true });
+      navigate(getPostAuthRedirectPath(response.user), { replace: true });
     } catch (err) {
       setError(getLoginErrorMessage(err));
       setLoading(false);

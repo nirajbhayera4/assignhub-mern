@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { getMe, getStoredUser, updateUserDetails } from '../services/auth';
 import '../styles/Profile.css';
 
@@ -36,6 +37,9 @@ const resizeImageFile = (file) =>
   });
 
 const Profile = () => {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const isSetupFlow = searchParams.get('setup') === '1';
   const storedUser = getStoredUser();
   const [formData, setFormData] = useState({
     name: '',
@@ -131,10 +135,25 @@ const Profile = () => {
       };
 
       const updatedUser = await updateUserDetails(payload);
+      const normalizedSkills = Array.isArray(updatedUser?.skills)
+        ? updatedUser.skills.join(', ')
+        : payload.skills.join(', ');
+
       setFormData((current) => ({
         ...current,
+        name: updatedUser?.name || current.name,
+        email: updatedUser?.email || current.email,
+        bio: updatedUser?.bio || current.bio,
+        collegeId: updatedUser?.collegeId || current.collegeId,
+        skills: normalizedSkills,
         avatar: updatedUser?.avatar || current.avatar,
       }));
+
+      if (isSetupFlow) {
+        navigate('/marketplace', { replace: true });
+        return;
+      }
+
       setSuccess('Your profile details have been updated.');
     } catch (err) {
       setError(
@@ -197,6 +216,12 @@ const Profile = () => {
             <p className="profile-panel-text">
               Keep your name, bio, and skills current so your profile feels more complete and trustworthy.
             </p>
+
+            {isSetupFlow ? (
+              <p className="profile-message profile-success">
+                Finish your profile once after login so your account is ready for the marketplace.
+              </p>
+            ) : null}
 
             <div className="profile-photo-section">
               <div className="profile-photo-preview">
