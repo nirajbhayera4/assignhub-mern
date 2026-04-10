@@ -142,11 +142,7 @@ function AppContent() {
         />
         <Route
           path="/marketplace"
-          element={
-            <ProtectedRoute>
-              <Marketplace />
-            </ProtectedRoute>
-          }
+          element={<Marketplace />}
         />
         <Route
           path="/wallet"

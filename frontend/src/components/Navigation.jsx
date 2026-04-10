@@ -13,7 +13,7 @@ const Navigation = ({ userRole, setUserRole }) => {
   return (
     <nav className="marketplace-nav">
       <div className="nav-container">
-        <Link to="/" className="nav-logo">
+        <Link to={authenticated ? "/marketplace" : "/"} className="nav-logo">
           Assign<span>Hub</span>
         </Link>
 

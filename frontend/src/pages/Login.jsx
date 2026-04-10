@@ -1,7 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, Navigate, useLocation } from 'react-router-dom';
 import { isAuthenticated, login } from '../services/auth';
 import '../styles/Login.css';
+
+const AUTH_ONLY_ROUTES = new Set([
+  '/login',
+  '/register',
+  '/forgot-password',
+  '/',
+  '/role-selection',
+]);
 
 const validateLoginForm = ({ email, password }) => {
   const nextErrors = {};
@@ -22,6 +30,16 @@ const validateLoginForm = ({ email, password }) => {
   return nextErrors;
 };
 
+const getSafeRedirectPath = (location) => {
+  const requestedPath = location.state?.from?.pathname;
+
+  if (!requestedPath || AUTH_ONLY_ROUTES.has(requestedPath)) {
+    return '/marketplace';
+  }
+
+  return requestedPath;
+};
+
 const getLoginErrorMessage = (error) => {
   const status = error.response?.status;
   const message = error.response?.data?.message;
@@ -38,9 +56,8 @@ const getLoginErrorMessage = (error) => {
 };
 
 const Login = () => {
-  const navigate = useNavigate();
   const location = useLocation();
-  const redirectTo = location.state?.from?.pathname || '/marketplace';
+  const redirectTo = getSafeRedirectPath(location);
 
   const [formData, setFormData] = useState({
     email: '',
@@ -51,11 +68,9 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    if (isAuthenticated()) {
-      navigate(redirectTo, { replace: true });
-    }
-  }, [navigate, redirectTo]);
+  if (isAuthenticated()) {
+    return <Navigate to={redirectTo} replace />;
+  }
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -80,6 +95,7 @@ const Login = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     const validationErrors = validateLoginForm(formData);
 
     setFieldErrors(validationErrors);
@@ -88,7 +104,7 @@ const Login = () => {
       password: true,
     });
 
-    if (Object.keys(validationErrors).length > 0) {
+    if (Object.keys(validationErrors).length > 0 || loading) {
       return;
     }
 
@@ -100,10 +116,10 @@ const Login = () => {
         email: formData.email.trim(),
         password: formData.password,
       });
-      navigate(redirectTo, { replace: true });
+
+      window.location.replace(redirectTo);
     } catch (err) {
       setError(getLoginErrorMessage(err));
-    } finally {
       setLoading(false);
     }
   };
