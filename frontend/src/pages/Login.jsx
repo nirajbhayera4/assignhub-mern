@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { login } from '../services/auth';
+import { isAuthenticated, login } from '../services/auth';
 import '../styles/Login.css';
 
 const validateLoginForm = ({ email, password }) => {
@@ -50,6 +50,12 @@ const Login = () => {
   const [touchedFields, setTouchedFields] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (isAuthenticated()) {
+      navigate(redirectTo, { replace: true });
+    }
+  }, [navigate, redirectTo]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;

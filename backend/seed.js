@@ -28,7 +28,7 @@ const seedData = async () => {
       {
         name: 'John Doe',
         email: 'john@example.com',
-        password: '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password: password123
+        password: '$2b$10$vJJA8HOek8MHLfUfiqk8j.8zRqrajqt9WOcIMjOFEtAzH8VvTyI.K', // password: password123
         role: 'provider',
         bio: 'Experienced project manager with 5+ years in tech',
         skills: ['Project Management', 'Agile', 'Scrum'],
@@ -43,7 +43,7 @@ const seedData = async () => {
       {
         name: 'Jane Smith',
         email: 'jane@example.com',
-        password: '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+        password: '$2b$10$vJJA8HOek8MHLfUfiqk8j.8zRqrajqt9WOcIMjOFEtAzH8VvTyI.K',
         role: 'provider',
         bio: 'Full-stack developer specializing in React and Node.js',
         skills: ['React', 'Node.js', 'MongoDB'],
@@ -58,7 +58,7 @@ const seedData = async () => {
       {
         name: 'Alex Johnson',
         email: 'alex@example.com',
-        password: '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+        password: '$2b$10$vJJA8HOek8MHLfUfiqk8j.8zRqrajqt9WOcIMjOFEtAzH8VvTyI.K',
         role: 'worker',
         bio: 'UI/UX designer with a passion for creating beautiful interfaces',
         skills: ['Figma', 'Adobe XD', 'Sketch'],
