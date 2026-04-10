@@ -164,7 +164,7 @@ export const resetPassword = async ({ email, otp, password }) => {
 // Logout user
 export const logout = () => {
   clearStoredAuth();
-  window.location.href = '/';
+  window.location.href = '/login';
 };
 
 // Check if user is authenticated

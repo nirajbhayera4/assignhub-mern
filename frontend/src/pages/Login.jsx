@@ -1,15 +1,7 @@
 import React, { useState } from 'react';
-import { Link, Navigate, useLocation } from 'react-router-dom';
-import { isAuthenticated, login } from '../services/auth';
+import { Link, useNavigate } from 'react-router-dom';
+import { getStoredUser, isAuthenticated, login } from '../services/auth';
 import '../styles/Login.css';
-
-const AUTH_ONLY_ROUTES = new Set([
-  '/login',
-  '/register',
-  '/forgot-password',
-  '/',
-  '/role-selection',
-]);
 
 const validateLoginForm = ({ email, password }) => {
   const nextErrors = {};
@@ -30,16 +22,6 @@ const validateLoginForm = ({ email, password }) => {
   return nextErrors;
 };
 
-const getSafeRedirectPath = (location) => {
-  const requestedPath = location.state?.from?.pathname;
-
-  if (!requestedPath || AUTH_ONLY_ROUTES.has(requestedPath)) {
-    return '/marketplace';
-  }
-
-  return requestedPath;
-};
-
 const getLoginErrorMessage = (error) => {
   const status = error.response?.status;
   const message = error.response?.data?.message;
@@ -56,8 +38,9 @@ const getLoginErrorMessage = (error) => {
 };
 
 const Login = () => {
-  const location = useLocation();
-  const redirectTo = getSafeRedirectPath(location);
+  const navigate = useNavigate();
+  const authenticated = isAuthenticated();
+  const storedUser = getStoredUser();
 
   const [formData, setFormData] = useState({
     email: '',
@@ -67,10 +50,6 @@ const Login = () => {
   const [touchedFields, setTouchedFields] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-
-  if (isAuthenticated()) {
-    return <Navigate to={redirectTo} replace />;
-  }
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -117,7 +96,7 @@ const Login = () => {
         password: formData.password,
       });
 
-      window.location.replace(redirectTo);
+      navigate('/marketplace', { replace: true });
     } catch (err) {
       setError(getLoginErrorMessage(err));
       setLoading(false);
@@ -147,10 +126,20 @@ const Login = () => {
         <div className="login-card">
           <div className="login-card-header">
             <h2>Sign in</h2>
-            <p>Use your AssignHub account to continue.</p>
+            <p>
+              {authenticated
+                ? 'You are already signed in. You can keep browsing or sign in with another account.'
+                : 'Use your AssignHub account to continue.'}
+            </p>
           </div>
 
           <form className="login-form" onSubmit={handleSubmit}>
+            {authenticated ? (
+              <div className="login-success">
+                Signed in as {storedUser?.email || storedUser?.name || 'current user'}.
+              </div>
+            ) : null}
+
             <label className="login-field">
               <span>Email</span>
               <input
@@ -210,6 +199,7 @@ const Login = () => {
           </form>
 
           <div className="auth-links">
+            <Link to="/marketplace">Browse marketplace</Link>
             <Link to="/register">Create account</Link>
             <Link to="/forgot-password">Forgot password?</Link>
           </div>
