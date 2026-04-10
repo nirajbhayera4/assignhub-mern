@@ -1,5 +1,29 @@
 import api from './api';
 
+const getStoredToken = () => {
+  const token = localStorage.getItem('token');
+
+  if (!token || token === 'undefined' || token === 'null') {
+    return null;
+  }
+
+  return token;
+};
+
+const clearStoredAuth = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+};
+
+const persistToken = (token) => {
+  if (!token || typeof token !== 'string') {
+    clearStoredAuth();
+    throw new Error('Authentication response did not include a valid token.');
+  }
+
+  localStorage.setItem('token', token);
+};
+
 const persistStoredUser = (user) => {
   try {
     localStorage.setItem('user', JSON.stringify(user));
@@ -38,7 +62,7 @@ export const register = async (userData) => {
     const user = normalizeStoredUser(response.data?.data);
 
     // Store token and user data
-    localStorage.setItem('token', token);
+    persistToken(token);
     persistStoredUser(user);
 
     return {
@@ -59,7 +83,7 @@ export const login = async (credentials) => {
     const user = normalizeStoredUser(response.data?.data);
 
     // Store token and user data
-    localStorage.setItem('token', token);
+    persistToken(token);
     persistStoredUser(user);
 
     return {
@@ -124,7 +148,7 @@ export const resetPassword = async ({ email, otp, password }) => {
     const token = response.data?.token;
     const user = normalizeStoredUser(response.data?.data);
 
-    localStorage.setItem('token', token);
+    persistToken(token);
     persistStoredUser(user);
 
     return {
@@ -139,14 +163,13 @@ export const resetPassword = async ({ email, otp, password }) => {
 
 // Logout user
 export const logout = () => {
-  localStorage.removeItem('token');
-  localStorage.removeItem('user');
+  clearStoredAuth();
   window.location.href = '/';
 };
 
 // Check if user is authenticated
 export const isAuthenticated = () => {
-  return !!localStorage.getItem('token');
+  return !!getStoredToken();
 };
 
 // Get stored user data

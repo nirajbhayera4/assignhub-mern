@@ -1,5 +1,20 @@
 import axios from 'axios';
 
+const getStoredToken = () => {
+  const token = localStorage.getItem('token');
+
+  if (!token || token === 'undefined' || token === 'null') {
+    return null;
+  }
+
+  return token;
+};
+
+const clearStoredAuth = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+};
+
 // Create axios instance with base URL
 const api = axios.create({
   baseURL: process.env.REACT_APP_API_URL || '/api',
@@ -11,7 +26,7 @@ const api = axios.create({
 // Request interceptor to add auth token
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
+    const token = getStoredToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -33,8 +48,7 @@ api.interceptors.response.use(
 
     if (error.response?.status === 401 && hasAuthHeader && !isAuthFormRequest) {
       // Only force logout for authenticated requests with an attached token.
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
+      clearStoredAuth();
       window.location.href = '/login';
     }
     return Promise.reject(error);
