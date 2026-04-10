@@ -39,6 +39,14 @@ function ProtectedRoute({ children }) {
   return children;
 }
 
+function PublicOnlyRoute({ children }) {
+  if (isAuthenticated()) {
+    return <Navigate to="/marketplace" replace />;
+  }
+
+  return children;
+}
+
 function AppContent() {
   const [userRole, setUserRole] = useState('worker');
   const location = useLocation();
@@ -52,17 +60,54 @@ function AppContent() {
         <Navigation userRole={userRole} setUserRole={setUserRole} />
       )}
       <Routes>
-        <Route path="/" element={<RoleSelection />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route
+          path="/"
+          element={
+            isAuthenticated() ? (
+              <Navigate to="/marketplace" replace />
+            ) : (
+              <RoleSelection />
+            )
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <PublicOnlyRoute>
+              <Login />
+            </PublicOnlyRoute>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <PublicOnlyRoute>
+              <Register />
+            </PublicOnlyRoute>
+          }
+        />
+        <Route
+          path="/forgot-password"
+          element={
+            <PublicOnlyRoute>
+              <ForgotPassword />
+            </PublicOnlyRoute>
+          }
+        />
         <Route path="/about" element={<About />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/terms-of-service" element={<TermsOfService />} />
         <Route path="/cookie-policy" element={<CookiePolicy />} />
         <Route path="/guidelines" element={<Guidelines />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/role-selection" element={<RoleSelection />} />
+        <Route
+          path="/role-selection"
+          element={
+            <PublicOnlyRoute>
+              <RoleSelection />
+            </PublicOnlyRoute>
+          }
+        />
         <Route
           path="/home"
           element={
