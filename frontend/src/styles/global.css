@@ -24,30 +24,24 @@ body {
     background: var(--bg);
     color: var(--text);
     overflow-x: hidden;
-    line-height: 1.6;
+    line-height: 1.65;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Syne', sans-serif;
 }
 
 .mono {
     font-family: 'JetBrains Mono', monospace;
 }
 
-/* Cursor */
-.cursor {
-    width: 20px;
-    height: 20px;
-    border: 2px solid var(--accent);
-    border-radius: 50%;
-    position: fixed;
-    pointer-events: none;
-    z-index: 9999;
-    mix-blend-mode: difference;
-    transition: transform 0.2s ease;
-}
-
 /* Utility Classes */
 .section-title {
     text-align: center;
-    margin-bottom: 5rem;
+    margin-bottom: 4rem;
 }
 
 .section-title h2 {

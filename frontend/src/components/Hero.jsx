@@ -6,8 +6,6 @@ import '../styles/Hero.css';
 const Hero = () => {
   return (
     <section className="hero">
-      <div className="bg-element bg-1"></div>
-      <div className="bg-element bg-2"></div>
       <div className="hero-content">
         <div className="hero-text">
           <div className="hero-eyebrow">Freelance marketplace for assignments, projects, and expert delivery</div>
@@ -16,42 +14,55 @@ const Hero = () => {
             Complete. <br />
             <span className="gradient-text">Collaborate.</span>
           </h1>
-          <p>Bring together the speed of a freelancing marketplace and the trust signals of an expert network. Post work, compare talent, manage milestones, and get paid securely in one workflow.</p>
+          <p>Manage assignments, match with verified experts, and finish work faster with a secure, easy-to-use marketplace built for students and specialists.</p>
           <div className="hero-buttons">
             <Link to="/register?role=provider" className="btn-primary">Hire Talent</Link>
             <Link to="/register?role=worker" className="btn-secondary">Start Earning</Link>
           </div>
           <div className="hero-signals">
             <div className="hero-signal-card">
-              <strong>Escrow-style flow</strong>
-              <span>Release payment only after approved delivery</span>
+              <strong>Secure payments</strong>
+              <span>Release funds only when work is approved.</span>
             </div>
             <div className="hero-signal-card">
-              <strong>Live talent marketplace</strong>
-              <span>Blend local assignments with external freelance demand</span>
+              <strong>Quick matching</strong>
+              <span>Find the right expert team without the wait.</span>
             </div>
             <div className="hero-signal-card">
-              <strong>Fast expert matching</strong>
-              <span>Shortlist specialists by budget, speed, and skill</span>
+              <strong>Clear delivery</strong>
+              <span>Track milestones, files, and feedback in one place.</span>
             </div>
           </div>
         </div>
+
         <div className="hero-visual">
-          <div className="floating-cards">
-            <div className="card card-1">
-              <h3>Essay on AI Ethics</h3>
-              <p>10 pages, APA format</p>
-              <span className="tag">{formatCurrencyINR(85)}</span>
-            </div>
-            <div className="card card-2">
-              <h3>Calculus Problem Set</h3>
-              <p>15 problems with solutions</p>
-              <span className="tag">{formatCurrencyINR(45)}</span>
-            </div>
-            <div className="card card-3">
+          <div className="visual-cards">
+            <div className="visual-card">
+              <span className="visual-label">Featured Assignment</span>
               <h3>React.js Project</h3>
-              <p>Full-stack web application</p>
-              <span className="tag">{formatCurrencyINR(150)}</span>
+              <p>Full-stack web application with polished UI and back-end integration.</p>
+              <div className="visual-meta">
+                <span>{formatCurrencyINR(150)}</span>
+                <span>Fast delivery</span>
+              </div>
+            </div>
+            <div className="visual-card">
+              <span className="visual-label">Student favorite</span>
+              <h3>Essay on AI Ethics</h3>
+              <p>Structured research paper with citations and proofreading.</p>
+              <div className="visual-meta">
+                <span>{formatCurrencyINR(85)}</span>
+                <span>Expert-reviewed</span>
+              </div>
+            </div>
+            <div className="visual-card">
+              <span className="visual-label">Quick help</span>
+              <h3>Calculus Problem Set</h3>
+              <p>Step-by-step solutions with clear explanations.</p>
+              <div className="visual-meta">
+                <span>{formatCurrencyINR(45)}</span>
+                <span>24h turnaround</span>
+              </div>
             </div>
           </div>
         </div>

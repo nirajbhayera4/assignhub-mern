@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getAssignments } from '../services/assignments';
 import { getStoredUser } from '../services/auth';
 import { getWallet } from '../services/users';
@@ -6,6 +7,7 @@ import { formatCurrencyINR } from '../utils/helpers';
 import '../styles/WorkerDashboard.css';
 
 const WorkerDashboard = () => {
+  const navigate = useNavigate();
   const [assignments, setAssignments] = useState([]);
   const [wallet, setWallet] = useState({
     balance: 0,
@@ -16,6 +18,8 @@ const WorkerDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeFilter, setActiveFilter] = useState('all');
+
+  const currentUser = getStoredUser();
 
   useEffect(() => {
     fetchDashboardData();
@@ -30,9 +34,8 @@ const WorkerDashboard = () => {
       setAssignments(assignmentsData.assignments || []);
 
       // Fetch wallet data
-      const user = getStoredUser();
-      if (user && user._id) {
-        const walletData = await getWallet(user._id);
+      if (currentUser && currentUser._id) {
+        const walletData = await getWallet(currentUser._id);
         setWallet(walletData);
       }
 
@@ -45,10 +48,25 @@ const WorkerDashboard = () => {
     }
   };
 
+  const getWorkerId = (application) => {
+    if (!application) return null;
+    if (typeof application.worker === 'string') return application.worker;
+    return application.worker?._id || application.worker?.id || null;
+  };
+
+  const isAppliedByUser = (assignment) => {
+    if (!assignment.applications?.length || !currentUser?._id) return false;
+    return assignment.applications.some((app) => getWorkerId(app) === currentUser._id);
+  };
+
+  const appliedCount = assignments.filter(isAppliedByUser).length;
+
   const filteredAssignments = assignments.filter(assignment => {
     if (activeFilter === 'all') return true;
     if (activeFilter === 'available') return assignment.status === 'Open';
-    if (activeFilter === 'applied') return assignment.applications?.some(app => app.worker === getStoredUser()?._id);
+    if (activeFilter === 'applied') {
+      return isAppliedByUser(assignment);
+    }
 
     return assignment.difficulty?.toLowerCase() === activeFilter;
   });
@@ -93,6 +111,13 @@ const WorkerDashboard = () => {
             </div>
           </div>
           <div className="stat-card">
+            <div className="stat-icon">✅</div>
+            <div className="stat-info">
+              <p>Applied Jobs</p>
+              <h3>{appliedCount}</h3>
+            </div>
+          </div>
+          <div className="stat-card">
             <div className="stat-icon">💰</div>
             <div className="stat-info">
               <p>Withdrawn</p>
@@ -115,6 +140,12 @@ const WorkerDashboard = () => {
             onClick={() => setActiveFilter('all')}
           >
             All Assignments
+          </button>
+          <button 
+            className={`filter-btn ${activeFilter === 'applied' ? 'active' : ''}`}
+            onClick={() => setActiveFilter('applied')}
+          >
+            Applied Jobs
           </button>
           <button 
             className={`filter-btn ${activeFilter === 'easy' ? 'active' : ''}`}
@@ -185,7 +216,13 @@ const WorkerDashboard = () => {
                   </div>
                 </div>
 
-                <button className="apply-btn">Apply Now</button>
+                <button
+                  className="apply-btn"
+                  onClick={() => navigate(`/assignments/${assignment._id}/apply`)}
+                  type="button"
+                >
+                  Apply Now
+                </button>
               </div>
             ))
           )}

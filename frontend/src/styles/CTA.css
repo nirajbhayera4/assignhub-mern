@@ -15,9 +15,21 @@
     left: 50%;
     width: 800px;
     height: 800px;
-    background: radial-gradient(circle, rgba(0, 255, 136, 0.1), transparent);
-    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(0, 255, 136, 0.12), transparent);
+    transform: translate(-50%, -50%) translateY(calc(var(--scroll-y, 0) * -0.08px));
     animation: pulse 4s ease-in-out infinite;
+}
+
+.cta-section::after {
+    content: '';
+    position: absolute;
+    top: 25%;
+    right: -90px;
+    width: 320px;
+    height: 320px;
+    background: rgba(255, 51, 102, 0.12);
+    border-radius: 50%;
+    transform: translateY(calc(var(--scroll-y, 0) * 0.08px));
 }
 
 @keyframes pulse {

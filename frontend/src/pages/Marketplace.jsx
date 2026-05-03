@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   getAssignments,
   getAdzunaMarketplaceAssignments,
@@ -45,6 +46,7 @@ const matchesBudgetRange = (budget, budgetRange) => {
 };
 
 const Marketplace = () => {
+  const navigate = useNavigate();
   const [assignments, setAssignments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -461,7 +463,13 @@ const Marketplace = () => {
                         View Listing
                       </a>
                     ) : (
-                      <button className="view-details-btn" type="button">View Details & Apply</button>
+                      <button
+                        className="view-details-btn"
+                        onClick={() => navigate(`/assignments/${assignment._id}/apply`)}
+                        type="button"
+                      >
+                        View Details & Apply
+                      </button>
                     )}
                     <button className="secondary-card-btn" type="button">
                       Invite to Shortlist

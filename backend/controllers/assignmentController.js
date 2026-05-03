@@ -304,7 +304,9 @@ exports.getAdzunaMarketplaceAssignments = asyncHandler(async (req, res, next) =>
       data: assignments,
     });
   } catch (error) {
-    res.status(error.statusCode || 500).json({
+    const statusCode = error.statusCode === 401 ? 502 : error.statusCode || 500;
+
+    res.status(statusCode).json({
       success: false,
       message: error.message || 'Unable to load Adzuna marketplace assignments.',
     });

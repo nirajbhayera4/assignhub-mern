@@ -44,10 +44,19 @@ api.interceptors.response.use(
     const requestUrl = error.config?.url || '';
     const hasAuthHeader = Boolean(error.config?.headers?.Authorization);
     const isAuthFormRequest =
-      requestUrl.includes('/auth/login') || requestUrl.includes('/auth/register');
+      requestUrl.includes('/auth/login') ||
+      requestUrl.includes('/auth/register') ||
+      requestUrl.includes('/auth/forgot-password') ||
+      requestUrl.includes('/auth/reset-password');
+    const isPublicExternalRequest = requestUrl.includes('/assignments/external/adzuna');
 
-    if (error.response?.status === 401 && hasAuthHeader && !isAuthFormRequest) {
-      // Only force logout for authenticated requests with an attached token.
+    if (
+      error.response?.status === 401 &&
+      hasAuthHeader &&
+      !isAuthFormRequest &&
+      !isPublicExternalRequest
+    ) {
+      // Only force logout for authenticated routes, not for public external data fetches.
       clearStoredAuth();
       window.location.href = '/login';
     }

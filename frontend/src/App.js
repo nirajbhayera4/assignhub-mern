@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom';
 import ForgotPassword from './pages/ForgotPassword';
 import About from './pages/About';
+import AssignmentDetails from './pages/AssignmentDetails';
 import Contact from './pages/Contact';
 import CookiePolicy from './pages/CookiePolicy';
 import Guidelines from './pages/Guidelines';
@@ -46,6 +47,7 @@ function AppContent() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/role-selection" element={<RoleSelection />} />
         <Route path="/home" element={<Home />} />
+        <Route path="/assignments/:id/apply" element={<AssignmentDetails />} />
         <Route path="/worker-dashboard" element={<WorkerDashboard />} />
         <Route path="/provider-dashboard" element={<ProviderDashboard />} />
         <Route path="/post-assignment" element={<PostAssignment />} />
